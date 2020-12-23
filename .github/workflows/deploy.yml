@@ -25,8 +25,6 @@ jobs:
 
       - run: python3 -m pip install boto3
 
-      - run: yarn install --force
-
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -63,11 +61,11 @@ jobs:
           echo "The environment is $ENVIRONMENT"
           echo "The branch is $BRANCH"
 
-      - run: yarn build
-        name: Yarn Build
+      - name: Yarn build
+        run: yarn install --force ; yarn Build
 
-      - run: sam build
-        name: Sam Build
+      - name: Sam build
+        run: sam Build
 
       - run: python3 .github/utils/create-bucket.py ${{ steps.vars.outputs.environment }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         name: Create Bucket
