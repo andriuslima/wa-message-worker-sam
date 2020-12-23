@@ -221,3 +221,4 @@ modules.xml
 # End of https://www.toptal.com/developers/gitignore/api/webstorm+all,node,yarn
 
 .aws-sam
+bin/

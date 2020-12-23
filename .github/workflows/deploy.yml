@@ -56,10 +56,10 @@ jobs:
           echo "The environment is $ENVIRONMENT"
           echo "The branch is $BRANCH"
 
-      - name: SAM Build
-        run: sam build
+      - name: Build
+        run: yarn build ; sam buil
 
-      - name: SAM Deploy
+      - name: Deploy
         run: |
           # Create S3 Bucket to store code
           python3 .github/utils/create-bucket.py ${{ steps.vars.outputs.environment }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }}

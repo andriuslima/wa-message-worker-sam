@@ -20,6 +20,7 @@ Resources:
   wpSender:
     Type: AWS::Serverless::Function
     Properties:
+      CodeUri: bin/
       Handler: index.handler
       Runtime: nodejs12.x
       Environment:
