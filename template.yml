@@ -3,11 +3,11 @@ Transform: AWS::Serverless-2016-10-31
 Description: Serverless application to process phones and send whatsapp messages
 
 Parameters:
-  UCHAT_URL:
+  UCHATURL:
     Type: String
     Description: uChat URl do post the message
     Default: localhost:8080
-  UCHAT_TOKEN:
+  UCHATTOKEN:
     Type: String
     Description: uChat Token
     Default: 123abc
@@ -24,8 +24,8 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          UCHAT_URL: !Ref UCHAT_URL
-          UCHAT_TOKEN: !Ref UCHAT_TOKEN
+          UCHAT_URL: !Ref UCHATURL
+          UCHAT_TOKEN: !Ref UCHATTOKEN
           MSG: !Ref MSG
       Events:
         phonesQueueEvent:

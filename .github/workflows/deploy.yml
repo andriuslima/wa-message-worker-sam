@@ -5,7 +5,7 @@ on:
       uChatURL:
         description: uCHAT URL
         required: true
-        default: "https://v1.utalk.chat/send/91zmapn"
+        default: https://v1.utalk.chat/send/91zmapn
       Message:
         description: Message to be sent
         required: true
@@ -68,7 +68,7 @@ jobs:
             --stack-name ${{ steps.vars.outputs.environment }} \
             --s3-bucket ${{ steps.vars.outputs.environment }} \
             --parameter-overrides \
-              'ParameterKey=UCHAT_URL,ParameterValue={inputs.uChatURL} \
-              ParameterKey=UCHAT_TOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }} \
+              'ParameterKey=UCHATURL,ParameterValue={inputs.uChatURL} \
+              ParameterKey=UCHATTOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }} \
               ParameterKey=MSG,ParameterValue={inputs.Message}' \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
