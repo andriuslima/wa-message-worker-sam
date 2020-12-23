@@ -22,8 +22,8 @@ jobs:
           node-version: '12'
 
       - name : Instal Dependencies
-        run: python3 -m pip install boto3 \
-              yarn install
+        run: python3 -m pip install boto3 ; \
+              yarn install --force
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -62,7 +62,7 @@ jobs:
           echo "The branch is $BRANCH"
 
       - name: Build
-        run: yarn build ; sam buil
+        run: yarn build ; sam build
 
       - name: Deploy
         run: |
