@@ -62,14 +62,16 @@ jobs:
           echo "The branch is $BRANCH"
 
       - run: yarn build
+        name: Yarn Build
 
       - run: sam build
+        name: Sam Build
+
+      - run: python3 .github/utils/create-bucket.py ${{ steps.vars.outputs.environment }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        name: Create Bucket
 
       - name: Deploy
         run: |
-          # Create S3 Bucket to store code
-          python3 .github/utils/create-bucket.py ${{ steps.vars.outputs.environment }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          # Run SAM Deploy
           sam deploy --template-file .aws-sam/build/template.yaml \
             --stack-name ${{ steps.vars.outputs.environment }} \
             --s3-bucket ${{ steps.vars.outputs.environment }} \
