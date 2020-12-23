@@ -61,8 +61,9 @@ jobs:
           echo "The environment is $ENVIRONMENT"
           echo "The branch is $BRANCH"
 
-      - name: Build
-        run: yarn build ; sam build
+      - run: yarn build
+
+      - run: sam build
 
       - name: Deploy
         run: |
