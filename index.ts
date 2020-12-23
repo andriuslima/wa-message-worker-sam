@@ -14,6 +14,8 @@ export const handler: Handler = (event: SQSEvent) => {
 }
 
 const sendMessage = async (message: WpMessage) => {
+    console.log(`SQS Message received: ${message}`)
+
     let config = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         params: {
@@ -24,11 +26,15 @@ const sendMessage = async (message: WpMessage) => {
         }
     }
 
+    console.log(`Sending message to ${message.phone} with content ${msg}`)
+
     http.post("/", null, config).then((response: AxiosResponse) => {
         if (response.status !== 200) {
             throw Error(response.statusText)
         }
     })
+
+    console.log(`Message sent to ${message.phone}`)
 }
 
 
