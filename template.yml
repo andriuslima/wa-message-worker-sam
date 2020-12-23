@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless application to process phones and send whatsapp messages
+Resources:
+  wpSender:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          UCHAT_URL: "https://v1.utalk.chat/send/91zmapn"
+          UCHAT_TOKEN: "91zmapn"
+          MSG: "This is a test message"
+      Events:
+        phonesQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt phonesQueue.Arn
+            BatchSize: 10
+  phonesQueue:
+    Type: AWS::SQS::Queue
+
