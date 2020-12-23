@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "tsc && cp package.json bin/"
+    "build": "tsc && cp package.json yarn.lock bin/"
   },
   "dependencies": {
     "@types/aws-lambda": "^8.10.63",
