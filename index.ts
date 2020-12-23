@@ -1,5 +1,4 @@
 import {Handler, SQSEvent, SQSRecord} from 'aws-lambda';
-import { WpMessage } from "./models";
 import axios, {AxiosResponse} from 'axios';
 
 const http = axios.create({baseURL: process.env.UCHAT_URL || 'https:localhost:1234'});
@@ -9,11 +8,11 @@ const msg: String = process.env.MSG || 'Test Message';
 
 export const handler: Handler = (event: SQSEvent) => {
     event.Records
-        .map((message: SQSRecord) => WpMessage.from(message.body))
-        .forEach((wpMessage: WpMessage) => { sendMessage(wpMessage) })
+        .map((message: SQSRecord) => message.body)
+        .forEach(messae => { sendMessage(messae) })
 }
 
-const sendMessage = async (message: WpMessage) => {
+const sendMessage = async (message: any) => {
     console.log(`SQS Message received: ${message}`)
 
     let config = {
@@ -32,6 +31,7 @@ const sendMessage = async (message: WpMessage) => {
         if (response.status !== 200) {
             throw Error(response.statusText)
         }
+        console.log(`http request response: ${response.statusText}`)
     })
 
     console.log(`Message sent to ${message.phone}`)
