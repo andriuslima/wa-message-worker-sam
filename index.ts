@@ -21,12 +21,11 @@ const sendMessage = async (message: any) => {
         params: {
             'token': uChatToken,
             'cmd': 'chat',
-            'to': message["phone"],
+            'to': message.phone + "@c.us",
             'msg': msg
         }
     }
 
-    console.log(`Sending message to ${message["phone"]} with content \"${msg}\"`)
     console.log(`Sending message to ${message.phone} with content \"${msg}\"`)
 
     http.post("/", null, config).then((response: AxiosResponse) => {
@@ -36,7 +35,7 @@ const sendMessage = async (message: any) => {
         console.log(`http request response: ${response.statusText}`)
     })
 
-    console.log(`Message sent to ${message["phone"]}`)
+    console.log(`Message sent to ${message.phone}`)
 }
 
 
