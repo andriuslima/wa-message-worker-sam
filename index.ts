@@ -1,6 +1,6 @@
 import {Handler, SQSEvent, SQSRecord} from 'aws-lambda';
 import { WpMessage } from "./models";
-import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 
 const http = axios.create({baseURL: process.env.UCHAT_URL || 'https:localhost:1234'});
 const uChatToken: String = process.env.UCHAT_TOKEN || 'no-token';
