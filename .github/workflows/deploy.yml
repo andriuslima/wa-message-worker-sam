@@ -17,6 +17,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
       - name : Instal Dependencies
         run: python3 -m pip install boto3 \
               yarn install
