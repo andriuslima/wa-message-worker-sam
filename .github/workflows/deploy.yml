@@ -24,7 +24,7 @@ jobs:
         shell: bash
         id: vars
         env:
-          REPO: ${{ github.repository.name }}
+          REPO: ${{ github.event.repository.name }}
           HASH: ${{ github.sha }}
           REF: ${{ github.ref }}
         run: |
