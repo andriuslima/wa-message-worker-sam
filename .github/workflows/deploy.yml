@@ -21,9 +21,9 @@ jobs:
         with:
           node-version: '12'
 
-      - name : Instal Dependencies
-        run: python3 -m pip install boto3 ; \
-              yarn install --force
+      - run: python3 -m pip install boto3
+
+      - run: yarn install --force
 
       - name: Checkout
         uses: actions/checkout@v2
