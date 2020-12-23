@@ -6,10 +6,6 @@ on:
         description: uCHAT URL
         required: true
         default: 'https://v1.utalk.chat/send'
-      Message:
-        description: Message to be sent
-        required: true
-        default: 'Hello World'
 
 jobs:
   deploy:

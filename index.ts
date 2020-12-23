@@ -4,8 +4,6 @@ import qs from 'qs';
 
 const http = axios.create({baseURL: process.env.UCHAT_URL || 'https:localhost:1234'});
 const uChatToken: String = process.env.UCHAT_TOKEN || 'no-token';
-const msg: String = process.env.MSG || 'Test Message';
-
 
 export const handler: Handler = (event: SQSEvent) => {
     event.Records
@@ -25,10 +23,10 @@ const sendMessage = async (message: any) => {
             'token': uChatToken,
             'cmd': 'chat',
             'to': message.phone + '@c.us',
-            'msg': msg
-        })
+            'msg': message.message
+    })
 
-    console.log(`Sending message to ${message.phone} with content \"${msg}\"`)
+    console.log(`Sending message to ${message.phone} with content \"${message.message}\"`)
 
     http.post(`/${uChatToken}`, data, config).then((response: AxiosResponse) => {
         if (response.status !== 200) {

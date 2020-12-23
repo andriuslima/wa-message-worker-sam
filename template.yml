@@ -27,7 +27,6 @@ Resources:
         Variables:
           UCHAT_URL: !Ref UCHATURL
           UCHAT_TOKEN: !Ref UCHATTOKEN
-          MSG: !Ref MSG
       Events:
         phonesQueueEvent:
           Type: SQS
