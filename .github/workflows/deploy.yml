@@ -4,11 +4,11 @@ on:
     inputs:
       uChatURL:
         description: uCHAT URL
-        required: false
-        default: https://v1.utalk.chat/send/91zmapn/
+        required: true
+        default: https://v1.utalk.chat/send/91zmapn
       Message:
         description: Message to be sent
-        required: false
+        required: true
         default: This is a test message
 
 jobs:
@@ -66,5 +66,5 @@ jobs:
             --s3-bucket ${{ steps.vars.outputs.environment }} \
             --parameter-overrides \
               'ParameterKey=UCHAT_URL,ParameterValue=${{ inputs.uChatURL }} \
-              ParameterKey=UCHAT_TOKEN,ParameterValue=${{ secrets.uChatURL }} \
+              ParameterKey=UCHAT_TOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }} \
               ParameterKey=MSG,ParameterValue=${{ inputs.Message }}'
