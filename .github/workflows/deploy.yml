@@ -5,7 +5,7 @@ on:
       uChatURL:
         description: uCHAT URL
         required: true
-        default: https://v1.utalk.chat/send/91zmapn
+        default: "https://v1.utalk.chat/send/91zmapn"
       Message:
         description: Message to be sent
         required: true
