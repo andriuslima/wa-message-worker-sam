@@ -21,7 +21,7 @@ const sendMessage = async (message: any) => {
         params: {
             'token': uChatToken,
             'cmd': 'chat',
-            'to': message.phone + "@c.us",
+            'to': message.phone + '@c.us',
             'msg': msg
         }
     }
