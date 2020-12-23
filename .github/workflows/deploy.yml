@@ -1,16 +1,6 @@
 name: Deploy to AWS
 on:
   workflow_dispatch:
-    inputs:
-      uchatURL:
-        description: 'uChat URL'
-        required: true
-      uChatToken:
-        description: 'uChat Token'
-        required: true
-      Msg:
-        description: 'Message to send'
-        required: true
 jobs:
   deploy:
     name: Deploy SAM stack to AWS
@@ -41,7 +31,7 @@ jobs:
           # Set variables
           BRANCH=${REF#refs/heads/}
           REPOSITORY=`echo $REPO | tr "/" "-"`
-          ENVIRONMENT=$BRANCH-$REPOSITORY-${{ secrets.AWS_REGION }}
+          ENVIRONMENT=$BRANCH-$REPOSITORY
           # In this step we are setting variables and persistenting them
           # into the environment so that they can be utilized in other steps
           echo "::set-output name=branch::$BRANCH"
@@ -65,7 +55,7 @@ jobs:
             --stack-name ${{ steps.vars.outputs.environment }} \
             --s3-bucket ${{ steps.vars.outputs.environment }} \
             --parameter-overrides \
-              'ParameterKey=UCHAT_URL,ParameterValue={inputs.uchatURL} \
-              ParameterKey=UCHAT_TOKEN,ParameterValue={inputs.uchatToken} \
-              ParameterKey=MSG,ParameterValue={inputs.Msg}' \
+              'ParameterKey=UCHAT_URL,ParameterValue=${{ secrets.UCHAT_URL }} \
+              ParameterKey=UCHAT_TOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }} \
+              ParameterKey=MSG,ParameterValue=${{ secrets.MSG }}' \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
