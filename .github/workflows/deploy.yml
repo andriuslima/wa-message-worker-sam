@@ -17,6 +17,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name : Instal Dependencies
+      - run: python3 -m pip install boto3
+
       - name: Checkout
         uses: actions/checkout@v2
 
