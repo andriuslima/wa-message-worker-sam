@@ -70,4 +70,5 @@ jobs:
             --parameter-overrides \
               'ParameterKey=UCHAT_URL,ParameterValue={inputs.uChatURL} \
               ParameterKey=UCHAT_TOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }} \
-              ParameterKey=MSG,ParameterValue={inputs.Message}'
+              ParameterKey=MSG,ParameterValue={inputs.Message}' \
+            --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
