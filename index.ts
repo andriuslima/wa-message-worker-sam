@@ -32,7 +32,7 @@ const sendMessage = async (message: any) => {
         if (response.status !== 200) {
             throw Error(response.statusText)
         }
-        console.log(`http request response: ${response.statusText}`)
+        console.log(`http request response status ${response.statusText}: ${response.data}`)
     })
 
     console.log(`Message sent to ${message.phone}`)
