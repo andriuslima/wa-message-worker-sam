@@ -9,11 +9,12 @@ const msg: String = process.env.MSG || 'Test Message';
 export const handler: Handler = (event: SQSEvent) => {
     event.Records
         .map((message: SQSRecord) => message.body)
-        .forEach(messae => { sendMessage(messae) })
+        .forEach(message => { sendMessage(message) })
 }
 
 const sendMessage = async (message: any) => {
     console.log(`SQS Message received: ${message}`)
+    message = JSON.parse(message)
 
     let config = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -25,7 +26,8 @@ const sendMessage = async (message: any) => {
         }
     }
 
-    console.log(`Sending message to ${message["phone"]} with content ${msg}`)
+    console.log(`Sending message to ${message["phone"]} with content \"${msg}\"`)
+    console.log(`Sending message to ${message.phone} with content \"${msg}\"`)
 
     http.post("/", null, config).then((response: AxiosResponse) => {
         if (response.status !== 200) {
