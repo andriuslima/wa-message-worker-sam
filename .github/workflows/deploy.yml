@@ -65,6 +65,6 @@ jobs:
             --stack-name ${{ steps.vars.outputs.environment }} \
             --s3-bucket ${{ steps.vars.outputs.environment }} \
             --parameter-overrides \
-              'ParameterKey=UCHAT_URL,ParameterValue=${{ inputs.uChatURL }} \
+              'ParameterKey=UCHAT_URL,ParameterValue={inputs.uChatURL} \
               ParameterKey=UCHAT_TOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }} \
-              ParameterKey=MSG,ParameterValue=${{ inputs.Message }}'
+              ParameterKey=MSG,ParameterValue={inputs.Message}'
