@@ -1,6 +1,21 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Serverless application to process phones and send whatsapp messages
+
+Parameters:
+  UCHAT_URL:
+    Type: String
+    Description: uChat URl do post the message
+    Default: localhost:8080
+  UCHAT_TOKEN:
+    Type: String
+    Description: uChat Token
+    Default: 123abc
+  MSG:
+    Type: String
+    Description: Message content
+    Default: This is a test message. Just ignore
+
 Resources:
   wpSender:
     Type: AWS::Serverless::Function
@@ -10,9 +25,9 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          UCHAT_URL: "https://v1.utalk.chat/send/91zmapn"
-          UCHAT_TOKEN: "91zmapn"
-          MSG: "This is a test message"
+          UCHAT_URL: !Ref UCHAT_URL
+          UCHAT_TOKEN: !Ref UCHAT_TOKEN
+          MSG: !Ref MSG
       Events:
         phonesQueueEvent:
           Type: SQS
