@@ -1,5 +1,7 @@
 import {Handler, APIGatewayEvent, Context, Callback} from 'aws-lambda';
-import { SSM } from 'aws-sdk'
+import {AWSError, SSM } from 'aws-sdk'
+import { GetParameterResult } from 'aws-sdk/clients/ssm';
+import { PromiseResult } from 'aws-sdk/lib/request';
 
 const ssm = new SSM()
 
@@ -10,8 +12,8 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
     let message;
     await ssm.getParameter({ Name: messageKey, WithDecryption: false })
         .promise()
-        .catch(err => console.log(err, err.stack))
-        .then((data: SSM.Types.GetParameterResult) => {
+        .catch((err: PromiseResult<GetParameterResult, AWSError>) => console.log(err.$response, err.$response.error))
+        .then((data: PromiseResult<GetParameterResult, AWSError>) => {
             console.log("On ssm promise")
             console.log(`Data: ${data}`)
             console.log(`Parameter: ${data.Parameter}`)
