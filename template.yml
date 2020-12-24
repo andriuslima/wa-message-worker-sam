@@ -52,8 +52,8 @@ Resources:
               Action:
                 - SQS:SendMessage
               Resource:
-                - !Ref phonesQueue
-                - !Ref phonesDLQ
+                - !GetAtt phonesQueue.Arn
+                - !GetAtt phonesDLQ.Arn
   wpSender:
     Type: AWS::Serverless::Function
     Properties:
