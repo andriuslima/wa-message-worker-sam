@@ -28,6 +28,13 @@ Resources:
           Properties:
             Path: /message/{key}
             Method: POST
+      Policies:
+        - Statement:
+            - Sid: SSMGetParameterPolicy
+              Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: '*'
   wpSender:
     Type: AWS::Serverless::Function
     Properties:
