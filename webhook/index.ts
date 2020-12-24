@@ -7,8 +7,10 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
     const messageKey = event.pathParameters?.messageKey || ""
     console.log(`Data: ${messageKey}`)
 
-    const message = ssm.getParameter({ Name: messageKey }, ((err, data) => {
-        return data.Parameter?.Value
+    let message;
+    await ssm.getParameter({ Name: messageKey, WithDecryption: false }, ((err, data) => {
+        if (err) console.log(err, err.stack);
+        message =  data.Parameter?.Value
     }))
 
     let response =  {
