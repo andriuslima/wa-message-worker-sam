@@ -1,18 +1,22 @@
 import {Handler, APIGatewayEvent, Context, Callback} from 'aws-lambda';
+import { SSM } from 'aws-sdk'
 
-export const handler: Handler = (event: APIGatewayEvent, context: Context, callback: Callback) => {
-    console.log(`Path: ${event.path}`)
-    console.log(`Path Param: ${event.pathParameters}`)
-    console.log(`Query String Param: ${event.queryStringParameters}`)
-    console.log(`Body: ${event.body}`)
+const ssm = new SSM()
 
+export const handler: Handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
+    const messageKey = event.pathParameters?.messageKey || ""
+
+    const message = ssm.getParameter({ Name: messageKey }, ((err, data) => {
+        console.log(`Data: ${data.Parameter?.Value}`)
+        return data.Parameter?.Value
+    }))
 
     let response =  {
         statusCode: 200,
         headers: {
             'x-custom-header' : `my custom header value`
         },
-        body: JSON.stringify(`Hello World!`)
+        body: message
     }
 
     return callback(null, response)
