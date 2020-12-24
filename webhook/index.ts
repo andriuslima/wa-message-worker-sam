@@ -5,9 +5,9 @@ const ssm = new SSM()
 
 export const handler: Handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
     const messageKey = event.pathParameters?.messageKey || ""
+    console.log(`Data: ${messageKey}`)
 
     const message = ssm.getParameter({ Name: messageKey }, ((err, data) => {
-        console.log(`Data: ${data.Parameter?.Value}`)
         return data.Parameter?.Value
     }))
 
@@ -16,7 +16,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
         headers: {
             'x-custom-header' : `my custom header value`
         },
-        body: message
+        body: JSON.stringify(message)
     }
 
     return callback(null, response)
