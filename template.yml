@@ -13,6 +13,14 @@ Parameters:
     Default: 123abc
 
 Resources:
+  phonesDLQ:
+    Type: AWS::SQS::Queue
+  phonesQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt phonesDLQ.Arn
+        maxReceiveCount: 2
   wpWebhook:
     Type: AWS::Serverless::Function
     Properties:
@@ -30,8 +38,7 @@ Resources:
             Method: POST
       Environment:
         Variables:
-          QUEUE: !GetAtt phonesQueue
-          QUEUE_DLQ: !GetAtt phonesDLQ
+          QUEUE: !Ref phonesQueue
       Policies:
         - Statement:
             - Sid: SSMGetParameterPolicy
@@ -58,12 +65,3 @@ Resources:
       DeadLetterQueue:
         Type: SQS
         TargetArn: !GetAtt phonesDLQ.Arn
-  phonesDLQ:
-    Type: AWS::SQS::Queue
-  phonesQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      RedrivePolicy:
-        deadLetterTargetArn: !GetAtt phonesDLQ.Arn
-        maxReceiveCount: 2
-
