@@ -26,7 +26,7 @@ Resources:
         PostMessage:
           Type: Api
           Properties:
-            Path: /message/{message-key}
+            Path: /message/{key}
             Method: POST
   wpSender:
     Type: AWS::Serverless::Function

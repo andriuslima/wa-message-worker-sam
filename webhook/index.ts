@@ -4,7 +4,7 @@ import { SSM } from 'aws-sdk'
 const ssm = new SSM()
 
 export const handler: Handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
-    const messageKey = event.pathParameters?.messageKey || ""
+    const messageKey = event.pathParameters?.key || "fallback"
     console.log(`Data: ${messageKey}`)
 
     let message;
