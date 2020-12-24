@@ -10,7 +10,7 @@ const queueUrl = process.env.QUEUE
 
 export const handler: Handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
     const messageKey = event.pathParameters?.key || "fallback"
-    const body = JSON.parse(event.body);
+    const body = JSON.parse(event.body || "");
     const phone =  body.phone
     let message;
 
