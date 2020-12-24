@@ -12,7 +12,6 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
     let message;
     await ssm.getParameter({ Name: messageKey, WithDecryption: false })
         .promise()
-        .catch((err: PromiseResult<GetParameterResult, AWSError>) => console.log(err.$response, err.$response.error))
         .then((data: PromiseResult<GetParameterResult, AWSError>) => {
             console.log("On ssm promise")
             console.log(`Data: ${data}`)
