@@ -1,12 +1,12 @@
 import {Handler, APIGatewayEvent, Context, Callback} from 'aws-lambda';
-import { SQS } from 'aws-sqs'
-import {AWSError, SSM } from 'aws-sdk'
+import { AWSError, SSM, SQS } from 'aws-sdk'
+import { SendMessageRequest } from 'aws-sdk/clients/sqs';
 import { GetParameterResult } from 'aws-sdk/clients/ssm';
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 const ssm = new SSM()
 const sqs = new SQS()
-const queueUrl = process.env.QUEUE
+const queueUrl = process.env.QUEUE || "localhost"
 
 export const handler: Handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
     const messageKey = event.pathParameters?.key || "fallback"
@@ -24,7 +24,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
     console.log(`Message: ${message}`)
 
     const queueMessage = JSON.stringify({message, phone})
-    const params = {
+    const params: SendMessageRequest = {
         MessageBody: queueMessage,
         QueueUrl: queueUrl
     }
