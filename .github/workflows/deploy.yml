@@ -1,11 +1,8 @@
 name: Deploy to AWS
 on:
-  workflow_dispatch:
-    inputs:
-      uChatURL:
-        description: uCHAT URL
-        required: true
-        default: 'https://v1.utalk.chat/send'
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
