@@ -51,7 +51,8 @@ Resources:
     Type: AWS::SQS::Queue
   phonesQueue:
     Type: AWS::SQS::Queue
-    RedrivePolicy:
-      deadLetterTargetArn: !GetAtt phonesDLQ.Arn
-      maxReceiveCount: 2
+    Properties:
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt phonesDLQ.Arn
+        maxReceiveCount: 2
 
