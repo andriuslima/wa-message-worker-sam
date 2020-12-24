@@ -28,6 +28,10 @@ Resources:
           Properties:
             Path: /message/{key}
             Method: POST
+      Environment:
+        Variables:
+          QUEUE: !GetAtt phonesQueue
+          QUEUE_DLQ: !GetAtt phonesDLQ
       Policies:
         - Statement:
             - Sid: SSMGetParameterPolicy

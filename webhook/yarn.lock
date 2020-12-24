@@ -28,7 +28,7 @@
   resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.68.tgz#51d5727e49e5ae13303adb10e2e8ffee7df12c71"
   integrity sha512-0/0ghix1WXU8xJxvRx/VtmAesLR6+dPFWrNhQ90Pq6oOYN3x+oRVPnjjYNOIRuEd7fmKovl7s6ILCXMnbDr4Mg==
 
-"@types/aws-sdk@2.817.0":
+"@types/aws-sdk@2.7.0":
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/@types/aws-sdk/-/aws-sdk-2.7.0.tgz#83588b3d14ebdca1d4ce5e023387577568ce82f3"
   integrity sha1-g1iLPRTr3KHUzl4CM4dXdWjOgvM=
@@ -95,6 +95,14 @@ array-union@^2.1.0:
   resolved "https://registry.yarnpkg.com/array-union/-/array-union-2.1.0.tgz#b798420adbeb1de828d84acd8a2e23d3efe85e8d"
   integrity sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==
 
+aws-lib@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/aws-lib/-/aws-lib-0.0.6.tgz#10d3941c411ab0c4cbcba6315e46794d94801554"
+  integrity sha1-ENOUHEEasMTLy6YxXkZ5TZSAFVQ=
+  dependencies:
+    sax "0.1.x"
+    xml2js "0.1.x"
+
 aws-sdk@*, aws-sdk@2.817.0:
   version "2.817.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.817.0.tgz#3a97b690b0ec494cf8ee927affb3973cf26abcc8"
@@ -109,6 +117,13 @@ aws-sdk@*, aws-sdk@2.817.0:
     url "0.10.3"
     uuid "3.3.2"
     xml2js "0.4.19"
+
+aws-sqs@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/aws-sqs/-/aws-sqs-0.0.6.tgz#6e9a8319aab27e61862df7e8503ff0c848310bc7"
+  integrity sha1-bpqDGaqyfmGGLffoUD/wyEgxC8c=
+  dependencies:
+    aws-lib "0.0.6"
 
 base64-js@^1.0.2:
   version "1.5.1"
@@ -322,12 +337,17 @@ run-parallel@^1.1.9:
   resolved "https://registry.yarnpkg.com/run-parallel/-/run-parallel-1.1.10.tgz#60a51b2ae836636c81377df16cb107351bcd13ef"
   integrity sha512-zb/1OuZ6flOlH6tQyMPUrE3x3Ulxjlo9WIVXR4yVYi4H9UXQaeIsPbLn2R3O3vQCnDKkAl2qHiuocKKX4Tz/Sw==
 
+sax@0.1.x:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/sax/-/sax-0.1.5.tgz#d1829a6120fa01665eb4dbff6c43f29fd6d61471"
+  integrity sha1-0YKaYSD6AWZetNv/bEPyn9bWFHE=
+
 sax@1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.1.tgz#7b8e656190b228e81a66aea748480d828cd2d37a"
   integrity sha1-e45lYZCyKOgaZq6nSEgNgozS03o=
 
-sax@>=0.6.0:
+sax@>=0.1.1, sax@>=0.6.0:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
@@ -405,6 +425,13 @@ uuid@3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
+
+xml2js@0.1.x:
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.1.14.tgz#5274e67f5a64c5f92974cd85139e0332adc6b90c"
+  integrity sha1-UnTmf1pkxfkpdM2FE54DMq3GuQw=
+  dependencies:
+    sax ">=0.1.1"
 
 xml2js@0.4.19:
   version "0.4.19"
