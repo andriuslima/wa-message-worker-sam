@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2016",
     "module": "commonjs",
-    "outDir": "./bin",
+    "outDir": "../bin/sender",
     "rootDir": ".",
     "strict": true,
     "noImplicitAny": true,

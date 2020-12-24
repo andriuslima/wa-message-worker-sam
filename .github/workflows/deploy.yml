@@ -57,8 +57,11 @@ jobs:
           echo "The environment is $ENVIRONMENT"
           echo "The branch is $BRANCH"
 
-      - name: Yarn build
-        run: yarn install --force ; yarn build
+      - name: Yarn Build Sender
+        run: yarn --cwd ./sender/ install --force ; yarn --cwd ./sender/ build
+
+      - name: Yarn Build Webhook
+        run: yarn --cwd ./webhook/ install --force ; yarn --cwd ./webhook/ build
 
       - name: Sam build
         run: sam build
@@ -73,6 +76,5 @@ jobs:
             --s3-bucket ${{ steps.vars.outputs.environment }} \
             --parameter-overrides \
               'ParameterKey=UCHATURL,ParameterValue=${{ github.event.inputs.uChatURL }} \
-              ParameterKey=UCHATTOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }} \
-              ParameterKey=MSG,ParameterValue=${{ github.event.inputs.Message }}' \
+              ParameterKey=UCHATTOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }}' \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM

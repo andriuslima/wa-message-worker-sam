@@ -11,16 +11,27 @@ Parameters:
     Type: String
     Description: uChat Token
     Default: 123abc
-  MSG:
-    Type: String
-    Description: Message content
-    Default: This is a test message. Just ignore
 
 Resources:
+  wpWebhook:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: bin/webhook/
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Description: Endpoint to process events and send to queue
+      MemorySize: 128
+      Timeout: 10
+      Events:
+        PostMessage:
+          Type: Api
+          Properties:
+            Path: /message
+            Method: POST
   wpSender:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: bin/
+      CodeUri: bin/sender/
       Handler: index.handler
       Runtime: nodejs12.x
       Environment:
