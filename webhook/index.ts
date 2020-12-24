@@ -8,20 +8,40 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
     console.log(`Data: ${messageKey}`)
 
     let message;
-    await ssm.getParameter({ Name: messageKey, WithDecryption: false }, ((err, data) => {
-        if (err) console.log(err, err.stack);
-        message =  data.Parameter?.Value
-    }))
+    await ssm.getParameter({ Name: messageKey, WithDecryption: false })
+        .promise()
+        .then((err, data) => {
+            if (err) console.log(err, err.stack);
+
+            console.log("On ssm promise")
+
+            console.log(`Data: ${data}`)
+            console.log(`Parameter: ${data.Parameter}`)
+
+            message = data.Parameter?.Value
+        });
+
+    console.log(`Message: ${message}`)
+
+    console.log("Returning")
 
     let response =  {
         statusCode: 200,
-        headers: {
-            'x-custom-header' : `my custom header value`
-        },
         body: JSON.stringify(message)
     }
 
     return callback(null, response)
 }
 
+/*
+* ((err, data) => {
+        if (err) console.log(err, err.stack);
 
+        console.log("On ssm callback")
+
+        console.log(`Data: ${data}`)
+        console.log(`Parameter: ${data.Parameter}`)
+
+        message = data.Parameter?.Value
+    })
+* */
