@@ -46,6 +46,14 @@ Resources:
               Action:
                 - ssm:GetParameter
               Resource: '*'
+        - Statement:
+            - Sid: SQSQueuePolicy
+              Effect: Allow
+              Action:
+                - SQS:SendMessage
+              Resource:
+                - !Ref phonesQueue
+                - !Ref phonesDLQ
   wpSender:
     Type: AWS::Serverless::Function
     Properties:
