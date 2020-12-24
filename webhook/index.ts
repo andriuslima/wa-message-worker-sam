@@ -3,7 +3,8 @@ import {Handler, APIGatewayEvent, Context, Callback} from 'aws-lambda';
 export const handler: Handler = (event: APIGatewayEvent, context: Context, callback: Callback) => {
     console.log(`Path: ${event.path}`)
     console.log(`Path Param: ${event.pathParameters}`)
-    console.log(`Path Body: ${event.body}`)
+    console.log(`Query String Param: ${event.queryStringParameters}`)
+    console.log(`Body: ${event.body}`)
 
 
     let response =  {
