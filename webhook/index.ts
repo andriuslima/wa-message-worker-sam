@@ -13,7 +13,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
         .catch(err => console.log(err, err.stack))
         .then((data) => {
             console.log("On ssm promise")
-            console.log(`Data: ${data.}`)
+            console.log(`Data: ${data}`)
             console.log(`Parameter: ${data.Parameter}`)
 
             message = data.Parameter?.Value
@@ -30,16 +30,3 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
 
     return callback(null, response)
 }
-
-/*
-* ((err, data) => {
-        if (err) console.log(err, err.stack);
-
-        console.log("On ssm callback")
-
-        console.log(`Data: ${data}`)
-        console.log(`Parameter: ${data.Parameter}`)
-
-        message = data.Parameter?.Value
-    })
-* */
