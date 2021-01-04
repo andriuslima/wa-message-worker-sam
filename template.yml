@@ -6,20 +6,20 @@ Parameters:
   UCHATURL:
     Type: String
     Description: uChat URl do post the message
-    Default: localhost:8080
+    Default: https://v1.utalk.chat/send
   UCHATTOKEN:
     Type: String
     Description: uChat Token
     Default: 123abc
 
 Resources:
-  phonesDLQ:
+  wpMessageDLQ:
     Type: AWS::SQS::Queue
-  phonesQueue:
+  wpMessageQueue:
     Type: AWS::SQS::Queue
     Properties:
       RedrivePolicy:
-        deadLetterTargetArn: !GetAtt phonesDLQ.Arn
+        deadLetterTargetArn: !GetAtt wpMessageDLQ.Arn
         maxReceiveCount: 2
   wpWebhook:
     Type: AWS::Serverless::Function
@@ -27,7 +27,7 @@ Resources:
       CodeUri: bin/webhook/
       Handler: index.handler
       Runtime: nodejs12.x
-      Description: Endpoint to process events and send to queue
+      Description: Endpoint to process whatsapp message events and send to queue
       MemorySize: 128
       Timeout: 10
       Events:
@@ -38,7 +38,7 @@ Resources:
             Method: POST
       Environment:
         Variables:
-          QUEUE: !Ref phonesQueue
+          QUEUE: !Ref wpMessageQueue
       Policies:
         - Statement:
             - Sid: SSMGetParameterPolicy
@@ -52,24 +52,27 @@ Resources:
               Action:
                 - SQS:SendMessage
               Resource:
-                - !GetAtt phonesQueue.Arn
-                - !GetAtt phonesDLQ.Arn
+                - !GetAtt wpMessageQueue.Arn
+                - !GetAtt wpMessageDLQ.Arn
   wpSender:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: bin/sender/
       Handler: index.handler
       Runtime: nodejs12.x
+      Description: Function to send whatsapp message
+      MemorySize: 128
+      Timeout: 10
       Environment:
         Variables:
           UCHAT_URL: !Ref UCHATURL
           UCHAT_TOKEN: !Ref UCHATTOKEN
       Events:
-        phonesQueueEvent:
+        messageQueueEvent:
           Type: SQS
           Properties:
-            Queue: !GetAtt phonesQueue.Arn
+            Queue: !GetAtt wpMessageQueue.Arn
             BatchSize: 10
       DeadLetterQueue:
         Type: SQS
-        TargetArn: !GetAtt phonesDLQ.Arn
+        TargetArn: !GetAtt wpMessageDLQ.Arn

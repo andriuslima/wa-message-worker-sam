@@ -21,7 +21,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
             message = data.Parameter?.Value
         });
 
-    console.log(`Message: ${message}`)
+    console.log(`Message retrieved: ${message}`)
 
     const queueMessage = JSON.stringify({message, phone})
     const params: SendMessageRequest = {
@@ -30,14 +30,16 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
     }
 
     sqs.sendMessage(params, (err, data) => {
-        if (err) console.log(err, err.stack);
-        else     console.log(data);
+        if (err) {
+            console.log(err, err.stack);
+            throw new Error(err.message)
+        } else {
+            console.log(data);
+        }
     });
 
-    let response =  {
+    return callback(null, {
         statusCode: 200,
         body: JSON.stringify(message)
-    }
-
-    return callback(null, response)
+    })
 }

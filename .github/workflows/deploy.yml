@@ -15,8 +15,10 @@ jobs:
           node-version: '12'
 
       - run: curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.10
+        name: Install Yarn
 
       - run: python3 -m pip install boto3
+        name: Install boto3
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -39,7 +41,6 @@ jobs:
           HASH: ${{ github.sha }}
           REF: ${{ github.ref }}
         run: |
-          # Set variables
           BRANCH=${REF#refs/heads/}
           REPOSITORY=`echo $REPO | tr "/" "-"`
           ENVIRONMENT=$BRANCH-$REPOSITORY
@@ -54,24 +55,17 @@ jobs:
           echo "The environment is $ENVIRONMENT"
           echo "The branch is $BRANCH"
 
-      - name: Yarn Build Sender
-        run: yarn --cwd ./sender/ install --force ; yarn --cwd ./sender/ build
-
-      - name: Yarn Build Webhook
-        run: yarn --cwd ./webhook/ install --force ; yarn --cwd ./webhook/ build
-
-      - name: Sam build
-        run: sam build
+      - name: Build
+        run: chmod +x .github/utils/build.sh ; .github/utils/build.sh
 
       - run: python3 .github/utils/create-bucket.py ${{ steps.vars.outputs.environment }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         name: Create Bucket
 
       - name: Deploy
         run: |
-          sam deploy --template-file .aws-sam/build/template.yaml \
+          sam deploy \
+            --template-file .aws-sam/build/template.yaml \
             --stack-name ${{ steps.vars.outputs.environment }} \
             --s3-bucket ${{ steps.vars.outputs.environment }} \
-            --parameter-overrides \
-              'ParameterKey=UCHATURL,ParameterValue=${{ github.event.inputs.uChatURL }} \
-              ParameterKey=UCHATTOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }}' \
+            --parameter-overrides 'ParameterKey=UCHATTOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }}' \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
