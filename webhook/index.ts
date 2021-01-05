@@ -14,11 +14,17 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
     const phone =  body.phone
     let message;
 
+    console.log(`Message key received: ${messageKey}`)
+
     await ssm.getParameter({ Name: messageKey, WithDecryption: false })
         .promise()
         .then((data: PromiseResult<GetParameterResult, AWSError>) => {
-            console.log("On ssm promise")
             message = data.Parameter?.Value
+        })
+        .catch((error: AWSError) => {
+            console.log(`Somethings went wrong when retrieving message to SSM ${messageKey}`)
+            console.log(error, error.stack)
+            throw new Error(error.message)
         });
 
     console.log(`Message retrieved: ${message}`)
@@ -31,6 +37,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
 
     sqs.sendMessage(params, (err, data) => {
         if (err) {
+            console.log(`Somethings went wrong when sending message to SQS ${queueUrl}`)
             console.log(err, err.stack);
             throw new Error(err.message)
         } else {

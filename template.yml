@@ -21,6 +21,13 @@ Resources:
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt wpMessageDLQ.Arn
         maxReceiveCount: 2
+  FallbackMessage:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: fallback
+      Type: String
+      Value: Hello World!
+      Description: Fallback message
   wpWebhook:
     Type: AWS::Serverless::Function
     Properties:
@@ -63,16 +70,16 @@ Resources:
       Description: Function to send whatsapp message
       MemorySize: 128
       Timeout: 10
-      Environment:
-        Variables:
-          UCHAT_URL: !Ref UCHATURL
-          UCHAT_TOKEN: !Ref UCHATTOKEN
       Events:
         messageQueueEvent:
           Type: SQS
           Properties:
             Queue: !GetAtt wpMessageQueue.Arn
             BatchSize: 10
+      Environment:
+        Variables:
+          UCHAT_URL: !Ref UCHATURL
+          UCHAT_TOKEN: !Ref UCHATTOKEN
       DeadLetterQueue:
         Type: SQS
         TargetArn: !GetAtt wpMessageDLQ.Arn
