@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2016",
+    "target": "es2017",
     "module": "commonjs",
     "outDir": "../bin/sender",
     "rootDir": ".",
@@ -8,6 +8,9 @@
     "noImplicitAny": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  }
+    "forceConsistentCasingInFileNames": true,
+  },
+  "include": [
+    "./*.ts"
+  ]
 }
