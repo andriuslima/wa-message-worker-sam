@@ -62,6 +62,6 @@ jobs:
           sam deploy \
             --template-file .aws-sam/build/template.yaml \
             --stack-name ${{ steps.vars.outputs.stack }} \
-            --stack-bucket ${{ steps.vars.outputs.stack }} \
+            --s3-bucket ${{ steps.vars.outputs.stack }} \
             --parameter-overrides 'ParameterKey=UCHATTOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }}' \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
