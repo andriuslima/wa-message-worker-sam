@@ -318,6 +318,11 @@ jmespath@0.15.0:
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
   integrity sha1-o/Iiqarp+Wb10nx5ZRDigJF2Qhc=
 
+key-value-replace@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/key-value-replace/-/key-value-replace-2.0.1.tgz#22aeb3cd7fe3dbe4c82fa30dc9e4f72b2663fcdc"
+  integrity sha512-T78gZx8M5bz2ewoPXDEqJVx59sUF9c6RxSfhtUXp9UTNxqTVa8OQN4O692YmMEe3a/d4CEZQgLnEG3xhea3G0g==
+
 lodash@^4.17.15:
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"

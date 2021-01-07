@@ -14,7 +14,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
     const messageKey = event.pathParameters?.key || "fallback"
     const { contact }: any = qs.parse(event.body || "")
     const { id, phone, first_name, last_name, fields } = contact
-    const boleto = fields.link_do_boleto
+    const linkBoleto = fields.link_do_boleto
     const name = first_name + " " + last_name
     let message;
 
@@ -34,7 +34,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
 
     console.log(`Message retrieved: ${message}`)
 
-    const queueMessage = JSON.stringify({id, phone, name, boleto, message})
+    const queueMessage = JSON.stringify({id, phone, message, params: {name, linkBoleto}})
     const params: SendMessageRequest = {
         MessageBody: queueMessage,
         QueueUrl: queueUrl

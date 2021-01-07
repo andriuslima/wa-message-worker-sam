@@ -4,6 +4,7 @@ import { SQS } from 'aws-sdk';
 import axios, { AxiosResponse, AxiosRequestConfig} from 'axios';
 import qs from 'qs';
 
+const replace = require('key-value-replace')
 const http = axios.create({baseURL: process.env.UCHAT_URL || 'localhost:1234'});
 const uChatToken = process.env.UCHAT_TOKEN || 'no-token';
 const dlq = process.env.DLQ || 'dlq-url';
@@ -16,7 +17,13 @@ export const handler: Handler = (event: SQSEvent) => {
 
 const sendMessage = async (body: any) => {
     console.log(`SQS message body received: ${body}`)
-    const {message, phone} = JSON.parse(body)
+    const {message, phone, params} = JSON.parse(body)
+
+    const replacedMessage = replace(message, params)
+
+    if (hasPlaceholders(replacedMessage)) {
+        return sendToDLQ(body, `params missing to complete message: ${replacedMessage}`)
+    }
 
     const config: AxiosRequestConfig = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -26,21 +33,21 @@ const sendMessage = async (body: any) => {
             'token': uChatToken,
             'cmd': 'chat',
             'to': '55' + phone + '@c.us',
-            'msg': message
+            'msg': replacedMessage
     })
 
-    console.log(`Sending message to ${phone} with content \"${message}\"`)
+    console.log(`Sending message to ${phone} with content \"${replacedMessage}\"`)
 
     const response: AxiosResponse = await http.post(`/${uChatToken}`, data, config)
 
     console.log(`http request response status ${response.statusText}: ${JSON.stringify(response.data)}`)
 
     if (response.status !== 200) {
-        sendToDLQ(body, `uChat status response: ${response.statusText}`)
+        return sendToDLQ(body, `uChat status response: ${response.statusText}`)
     }
 
     if (response.data.status === 'offline') {
-        sendToDLQ(body, `uChat data status response: ${response.data.status}`)
+        return sendToDLQ(body, `uChat data status response: ${response.data.status}`)
     }
 
     console.log(`Message sent to ${phone}`)
@@ -67,5 +74,10 @@ function sendToDLQ(message: string, error: string) {
             console.log('message successfully routed to DLQ');
         }
     });
+}
+
+function hasPlaceholders(message: string) {
+    const matches = message.match(new RegExp('{{ \\w+ }}', 'g'))
+    return matches !== null && matches.length > 0
 }
 
