@@ -38,8 +38,6 @@ jobs:
         id: vars
         env:
           REPO: ${{ github.event.repository.name }}
-          HASH: ${{ github.sha }}
-          REF: ${{ github.ref }}
         run: |
           STACK=`echo $REPO | tr "/" "-"`
           echo "::set-output name=stack::$STACK"
