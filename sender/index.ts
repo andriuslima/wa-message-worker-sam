@@ -36,24 +36,24 @@ const sendMessage = async (body: any) => {
     console.log(`http request response status ${response.statusText}: ${JSON.stringify(response.data)}`)
 
     if (response.status !== 200) {
-        console.log(`uChat status response: ${response.statusText}`)
-        sendToDLQ(message, response.statusText)
+        sendToDLQ(body, `uChat status response: ${response.statusText}`)
     }
 
     if (response.data.status === 'offline') {
-        console.log(`uChat data status response: ${response.data.status}`)
-        sendToDLQ(message, response.data.status)
+        sendToDLQ(body, `uChat data status response: ${response.data.status}`)
     }
 
     console.log(`Message sent to ${phone}`)
 }
 
 function sendToDLQ(message: string, error: string) {
+    console.log(error)
     const sqs = new SQS()
     const errorMessage = {
         originalMessage: message,
         error: error
     }
+
     const params: SendMessageRequest = {
         MessageBody: JSON.stringify(errorMessage),
         QueueUrl: dlq
