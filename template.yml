@@ -80,6 +80,7 @@ Resources:
         Variables:
           UCHAT_URL: !Ref UCHATURL
           UCHAT_TOKEN: !Ref UCHATTOKEN
+          DLQ: !Ref wpMessageDLQ
       DeadLetterQueue:
         Type: SQS
         TargetArn: !GetAtt wpMessageDLQ.Arn
