@@ -50,7 +50,11 @@ jobs:
       - name: Build
         run: chmod +x .github/utils/build.sh ; .github/utils/build.sh
 
-      - run: python3 .github/utils/create-bucket.py ${{ steps.vars.outputs.stack }} ${{ secrets.AWS_ACCESS_KEY_ID }} ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - run: python3 .github/utils/create-bucket.py \
+          ${{ steps.vars.outputs.stack }} \
+          ${{ secrets.AWS_ACCESS_KEY_ID }} \
+          ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+          ${{ secrets.AWS_REGION }}
         name: Create Bucket
 
       - name: Deploy
