@@ -19,7 +19,7 @@ const sendMessage = async (body: any) => {
     console.log(`SQS message body received: ${body}`)
     const {message, phone, params} = JSON.parse(body)
 
-    const replacedMessage = replace(message, params)
+    const replacedMessage = replace(message, params, ['[[', ']]'])
 
     if (hasPlaceholders(replacedMessage)) {
         return sendToDLQ(body, `params missing to complete message: ${replacedMessage}`)
@@ -77,7 +77,7 @@ function sendToDLQ(message: string, error: string) {
 }
 
 function hasPlaceholders(message: string) {
-    const matches = message.match(new RegExp('{{ \\w+ }}', 'g'))
+    const matches = message.match(new RegExp('[[ \\w+ ]]', 'g'))
     return matches !== null && matches.length > 0
 }
 
