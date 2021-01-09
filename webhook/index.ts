@@ -16,7 +16,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
     const { id, phone, first_name, last_name, fields } = contact
     const linkBoleto = fields.link_do_boleto
     const name = first_name + " " + last_name
-    let message;
+    let message: string | undefined;
 
     console.log(`active campaign event received for contact: ${id}:${name}:${phone}`)
     console.log(`Message key received: ${messageKey}`)
@@ -38,6 +38,10 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
     const params: SendMessageRequest = {
         MessageBody: queueMessage,
         QueueUrl: queueUrl
+    }
+
+    if (message === undefined) {
+        throw new Error(`Message to sent is undefined: ${messageKey}`)
     }
 
     sqs.sendMessage(params, (err, data) => {
