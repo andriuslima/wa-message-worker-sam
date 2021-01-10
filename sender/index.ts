@@ -58,7 +58,6 @@ const sendMessage = async (body: any) => {
 function sendToDLQ (message: string, error: string) {
   console.log(error)
   const sqs = new SQS()
-  const x_is = 8
   const errorMessage = {
     originalMessage: message,
     error: error
