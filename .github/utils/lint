@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+yarn --cwd sender eslint *.ts
+yarn --cwd webhook eslint *.ts
