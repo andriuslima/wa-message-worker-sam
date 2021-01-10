@@ -13,13 +13,13 @@ Parameters:
     Default: 123abc
 
 Resources:
-  wpMessageDLQ:
+  waMessageDLQ:
     Type: AWS::SQS::Queue
-  wpMessageQueue:
+  waMessageQueue:
     Type: AWS::SQS::Queue
     Properties:
       RedrivePolicy:
-        deadLetterTargetArn: !GetAtt wpMessageDLQ.Arn
+        deadLetterTargetArn: !GetAtt waMessageDLQ.Arn
         maxReceiveCount: 2
   FallbackMessage:
     Type: AWS::SSM::Parameter
@@ -28,10 +28,10 @@ Resources:
       Type: String
       Value: Hello World!
       Description: Fallback message
-  wpWebhook:
+  activeCampaignWebhook:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: bin/webhook/
+      CodeUri: bin/active-campaign-webhook/
       Handler: index.handler
       Runtime: nodejs12.x
       Description: Endpoint to process whatsapp message events and send to queue
@@ -45,7 +45,7 @@ Resources:
             Method: POST
       Environment:
         Variables:
-          QUEUE: !Ref wpMessageQueue
+          QUEUE: !Ref waMessageQueue
       Policies:
         - Statement:
             - Sid: SSMGetParameterPolicy
@@ -59,9 +59,9 @@ Resources:
               Action:
                 - SQS:SendMessage
               Resource:
-                - !GetAtt wpMessageQueue.Arn
-                - !GetAtt wpMessageDLQ.Arn
-  wpSender:
+                - !GetAtt waMessageQueue.Arn
+                - !GetAtt waMessageDLQ.Arn
+  waSender:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: bin/sender/
@@ -74,13 +74,13 @@ Resources:
         messageQueueEvent:
           Type: SQS
           Properties:
-            Queue: !GetAtt wpMessageQueue.Arn
+            Queue: !GetAtt waMessageQueue.Arn
             BatchSize: 10
       Environment:
         Variables:
           UCHAT_URL: !Ref UCHATURL
           UCHAT_TOKEN: !Ref UCHATTOKEN
-          DLQ: !Ref wpMessageDLQ
+          DLQ: !Ref waMessageDLQ
       DeadLetterQueue:
         Type: SQS
-        TargetArn: !GetAtt wpMessageDLQ.Arn
+        TargetArn: !GetAtt waMessageDLQ.Arn

@@ -3,6 +3,8 @@ export default function (str: string, data: Map<string, string>, delimiter = ['{
     const regexp = new RegExp(delimiter[0] + key + delimiter[1], 'g')
     const value = data.get(key) || 'N/A'
 
+    const x_is = 'something'
+
     str = str.replace(regexp, value)
   })
 

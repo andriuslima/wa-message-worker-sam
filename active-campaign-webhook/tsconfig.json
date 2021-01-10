@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
-    "outDir": "../bin/webhook",
+    "outDir": "../bin/active-campaign-webhook",
     "rootDir": ".",
     "strict": true,
     "noImplicitAny": false,

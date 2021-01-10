@@ -15,16 +15,18 @@ jobs:
           node-version: '12'
 
       - run: |
-          sudo apt-get install python3-setuptools ;
-          python3 -m pip install boto3 ;
+          sudo apt-get install python3-setuptools &&
+          python3 -m pip install boto3 &&
           curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.10
         name: Install dependencies
 
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build
-        run: chmod +x .github/utils/build.sh ; .github/utils/build.sh
+      - name: Yarn Build
+        run: yarn install &&
+             yarn lint &&
+             yarn build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -35,6 +37,9 @@ jobs:
       
       - name: Validate
         run: sam validate
+
+      - name: Sam Build
+        run: sam build
 
       - name: Configure variables
         shell: bash

@@ -15,6 +15,7 @@ s3 = boto3.resource('s3',
 try:
     s3.meta.client.head_bucket(Bucket=bucket)
 except ClientError:
+    # This exception means that the bucket could not be found. So we must create it
     s3.create_bucket(
         Bucket=bucket,
         CreateBucketConfiguration={'LocationConstraint': REGION})

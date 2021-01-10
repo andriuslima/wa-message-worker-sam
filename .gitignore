@@ -222,3 +222,4 @@ modules.xml
 
 .aws-sam
 bin/
+*.code-workspace
