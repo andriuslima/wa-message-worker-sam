@@ -20,13 +20,13 @@ Globals:
 
 
 Resources:
-  waMessageDLQ:
+  WaMessageDLQ:
     Type: AWS::SQS::Queue
-  waMessageQueue:
+  WaMessageQueue:
     Type: AWS::SQS::Queue
     Properties:
       RedrivePolicy:
-        deadLetterTargetArn: !GetAtt waMessageDLQ.Arn
+        deadLetterTargetArn: !GetAtt WaMessageDLQ.Arn
         maxReceiveCount: 2
   FallbackMessage:
     Type: AWS::SSM::Parameter
@@ -35,10 +35,20 @@ Resources:
       Type: String
       Value: Hello World!
       Description: Fallback message
-  activeCampaignWebhook:
+  CommLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: comm-layer
+      CompatibleRuntimes:
+      - nodejs12.x
+      Description: Common layer for WaSender and Webhooks
+      ContentUri: ./layer
+  ActiveCampaignWebhook:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: bin/active-campaign-webhook/
+      Layers:
+        - !Ref CommLayer
       Handler: index.handler
       Description: Endpoint to process whatsapp message events and send to queue
       Events:
@@ -49,7 +59,7 @@ Resources:
             Method: POST
       Environment:
         Variables:
-          QUEUE: !Ref waMessageQueue
+          QUEUE: !Ref WaMessageQueue
       Policies:
         - Statement:
             - Sid: SSMGetParameterPolicy
@@ -63,25 +73,27 @@ Resources:
               Action:
                 - SQS:SendMessage
               Resource:
-                - !GetAtt waMessageQueue.Arn
-                - !GetAtt waMessageDLQ.Arn
-  waSender:
+                - !GetAtt WaMessageQueue.Arn
+                - !GetAtt WaMessageDLQ.Arn
+  WaSender:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: bin/sender/
+      Layers:
+        - !Ref CommLayer
       Handler: index.handler
       Description: Function to send whatsapp message
       Events:
         messageQueueEvent:
           Type: SQS
           Properties:
-            Queue: !GetAtt waMessageQueue.Arn
+            Queue: !GetAtt WaMessageQueue.Arn
             BatchSize: 10
       Environment:
         Variables:
           UCHAT_URL: !Ref UCHATURL
           UCHAT_TOKEN: !Ref UCHATTOKEN
-          DLQ: !Ref waMessageDLQ
+          DLQ: !Ref WaMessageDLQ
       DeadLetterQueue:
         Type: SQS
-        TargetArn: !GetAtt waMessageDLQ.Arn
+        TargetArn: !GetAtt WaMessageDLQ.Arn

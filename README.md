@@ -13,4 +13,11 @@ Replace the `xxxxx` with the actual token
 
 `sam local start-api --profile xxxxx`
 
-`curl -d '{"phone":"99999999999"}' -H "Content-Type: application/json" -X POST http://127.0.0.1:3000/message/fallback/`
+`curl --location --request POST 'http://127.0.0.1:3000/message/fallback/' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'contact[id]=12060' \
+--data-urlencode 'contact[email]=name@domain.com' \
+--data-urlencode 'contact[first_name]=Tobey' \
+--data-urlencode 'contact[last_name]"=Maguire' \
+--data-urlencode 'contact[phone]=55999999999' \
+--data-urlencode 'contact[fields][link_do_boleto]=www.google.com'`
