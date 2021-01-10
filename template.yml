@@ -12,6 +12,13 @@ Parameters:
     Description: uChat Token
     Default: 123abc
 
+Globals:
+  Function:
+    Runtime: nodejs12.x
+    MemorySize: 128
+    Timeout: 10
+
+
 Resources:
   waMessageDLQ:
     Type: AWS::SQS::Queue
@@ -33,10 +40,7 @@ Resources:
     Properties:
       CodeUri: bin/active-campaign-webhook/
       Handler: index.handler
-      Runtime: nodejs12.x
       Description: Endpoint to process whatsapp message events and send to queue
-      MemorySize: 128
-      Timeout: 10
       Events:
         PostMessage:
           Type: Api
@@ -66,10 +70,7 @@ Resources:
     Properties:
       CodeUri: bin/sender/
       Handler: index.handler
-      Runtime: nodejs12.x
       Description: Function to send whatsapp message
-      MemorySize: 128
-      Timeout: 10
       Events:
         messageQueueEvent:
           Type: SQS
