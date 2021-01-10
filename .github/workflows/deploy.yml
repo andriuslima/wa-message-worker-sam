@@ -25,9 +25,6 @@ jobs:
 
       - name: Build
         run: chmod +x .github/utils/build.sh ; .github/utils/build.sh
-      
-      - name: Linting
-        run: .github/utils/lint
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1

@@ -8,6 +8,7 @@
   "private": true,
   "scripts": {
     "dev": "sucrase . -d ../bin/webhook --transforms typescript,imports",
+    "lint": "eslint .",
     "build": "tsc && cp package.json ../bin/webhook/"
   },
   "devDependencies": {
