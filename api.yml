@@ -1,0 +1,72 @@
+openapi: 3.0.0
+
+info:
+  description: "API with webhooks to process events from Active Campaign"
+  version: "1.0.0"
+  title: "WhatsApp Message Worker API"
+paths:
+  /message/{key}:
+    post:
+      summary: "Send message with specific key"
+      description: "The key represent what message to send. The messages content are store in AWS SSM"
+      operationId: "sendMessage"
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/ActiveCampaignWebhookRequest"
+      parameters:
+      - in: "path"
+        name: "key"
+        description: "Message key"
+        required: true
+        schema:
+            type: string
+      responses:
+        "200":
+          description: "Success"
+      # For AWS Integration
+      x-amazon-apigateway-request-validators:
+        basic:
+          validateRequestParameters: true
+      x-amazon-apigateway-integration:
+        type: "aws"
+        httpMethod: "POST"
+        # Replace AWS_REGION and ACCOUNT_ID in uri
+        uri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:AWS_REGION:ACCOUNT_ID:function:PostPetFunction/invocations"
+        responses:
+          default:
+            statusCode: 200
+        requestTemplates:
+          application/json: "{\r\n  \"method\": \"$context.httpMethod\",\r\n  \"body\" : \"$input.body\",\r\n  \"headers\": {\r\n    #foreach($param in $input.params().header.keySet())\r\n    \"$param\": \"$util.escapeJavaScript($input.params().header.get($param))\" #if($foreach.hasNext),#end\r\n\r\n    #end\r\n  },\r\n  \"queryParams\": {\r\n    #foreach($param in $input.params().querystring.keySet())\r\n    \"$param\": \"$util.escapeJavaScript($input.params().querystring.get($param))\" #if($foreach.hasNext),#end\r\n\r\n    #end\r\n  },\r\n  \"pathParams\": {\r\n    #foreach($param in $input.params().path.keySet())\r\n    \"$param\": \"$util.escapeJavaScript($input.params().path.get($param))\" #if($foreach.hasNext),#end\r\n\r\n    #end\r\n  }  \r\n}"
+
+components:
+    schemas:
+        ActiveCampaignWebhookResponse:
+            type: "object"
+            properties:
+                statusCode:
+                    type: "integer"
+                    format: "int64"
+                body:   
+                    type: "string"
+        ActiveCampaignWebhookRequest:
+            type: "object"
+            properties:
+                contact:
+                    type: "object"
+                    format: "int64"
+                    properties:
+                        first_name:
+                            type: "string"
+                        last_name:
+                            type: "string"
+                        phone:
+                            type: "string"
+                        id:
+                            type: "string"
+                        fields:
+                            type: "object"
+                            properties:
+                                link_do_boleto:
+                                    type: "string"
