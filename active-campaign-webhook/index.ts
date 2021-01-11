@@ -4,6 +4,7 @@ import { SendMessageRequest } from 'aws-sdk/clients/sqs'
 import { GetParameterResult } from 'aws-sdk/clients/ssm'
 import { PromiseResult } from 'aws-sdk/lib/request'
 import qs from 'qs'
+import parsePhoneNumber from 'libphonenumber-js'
 
 const ssm = new SSM()
 const sqs = new SQS()
@@ -17,7 +18,12 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
   const linkBoleto = fields.link_do_boleto
   let message: string | undefined
 
-  console.log(`active campaign event received for contact: ${id}:${name}:${phone}`)
+  const formatedPhone = phone.length === 8 ? '9' + phone : phone
+  const phoneNumber = parsePhoneNumber(formatedPhone, 'BR')?.format('E.164').replace('+', '')
+
+  console.log(`Formated Phone: ${formatedPhone}`)
+  console.log(`Phone Format E164: ${phoneNumber}`)
+  console.log(`Active campaign event received for contact: ${id}:${name}:${phoneNumber}`)
   console.log(`Message key received: ${messageKey}`)
 
   await ssm.getParameter({ Name: messageKey, WithDecryption: false })
@@ -33,7 +39,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
 
   console.log(`Message retrieved: ${message}`)
 
-  const queueMessage = JSON.stringify({ id, phone, message, params: { name, linkBoleto } })
+  const queueMessage = JSON.stringify({ id, phone: phoneNumber, message, params: { name, linkBoleto } })
   const params: SendMessageRequest = {
     MessageBody: queueMessage,
     QueueUrl: queueUrl
@@ -55,6 +61,6 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
 
   return callback(null, {
     statusCode: 200,
-    body: JSON.stringify(message)
+    body: queueMessage
   })
 }

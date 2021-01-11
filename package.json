@@ -3,9 +3,11 @@
   "name": "wa-message-worker-sam",
   "scripts": {
     "dev": "yarn workspaces -pt run dev",
+    "build": "yarn workspaces -pt run build",
     "lint": "yarn workspaces -pt run lint",
     "layer": "yarn install --modules-folder layer/nodejs/node_modules --no-progress --non-interactive --production --silent",
-    "build": "yarn workspaces -pt run build"
+    "postdev": "yarn lint && yarn layer && sam build && sam local start-api --profile $AWS_PROFILE",
+    "postbuild": "yarn lint && yarn layer && sam build"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.63",

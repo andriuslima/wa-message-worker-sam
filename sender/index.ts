@@ -34,7 +34,7 @@ const sendMessage = async (body: any) => {
   const data = qs.stringify({
     token: uChatToken,
     cmd: 'chat',
-    to: '55' + phone + '@c.us',
+    to: phone + '@c.us',
     msg: replacedMessage
   })
 
