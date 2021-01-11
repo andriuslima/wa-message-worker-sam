@@ -13,19 +13,18 @@ const queueUrl = process.env.QUEUE || 'localhost'
 export const handler: Handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
   const messageKey = event.pathParameters?.key || 'fallback'
   const { contact } : any = qs.parse(event.body || '')
+  console.log(`Contact received: ${contact}`)
+
   const { id, phone, first_name: firstName, last_name: lastName, fields } = contact
   const name = (firstName || lastName || 'Abundante').split(' ')[0]
-  const linkBoleto = fields.link_do_boleto
-  let message: string | undefined
-
+  const linkBoleto = fields?.link_do_boleto
   const formatedPhone = phone.length === 8 ? '9' + phone : phone
   const phoneNumber = parsePhoneNumber(formatedPhone, 'BR')?.format('E.164').replace('+', '')
 
-  console.log(`Formated Phone: ${formatedPhone}`)
-  console.log(`Phone Format E164: ${phoneNumber}`)
   console.log(`Active campaign event received for contact: ${id}:${name}:${phoneNumber}`)
   console.log(`Message key received: ${messageKey}`)
 
+  let message: string | undefined
   await ssm.getParameter({ Name: messageKey, WithDecryption: false })
     .promise()
     .then((data: PromiseResult<GetParameterResult, AWSError>) => {
