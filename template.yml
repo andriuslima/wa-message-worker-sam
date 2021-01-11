@@ -34,7 +34,7 @@ Resources:
       Name: fallback
       Type: String
       Value: Hello World!
-      Description: Fallback message
+      Description: Olá {name}!
   CommLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
