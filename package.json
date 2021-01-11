@@ -6,7 +6,7 @@
     "build": "yarn workspaces -pt run build",
     "lint": "yarn workspaces -pt run lint",
     "layer": "yarn install --modules-folder layer/nodejs/node_modules --no-progress --non-interactive --production --silent",
-    "postdev": "yarn lint && yarn layer && sam build && sam local start-api --profile $AWS_PROFILE",
+    "postdev": "yarn lint && yarn layer && sam build",
     "postbuild": "yarn lint && yarn layer && sam build"
   },
   "devDependencies": {

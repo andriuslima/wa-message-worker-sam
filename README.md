@@ -5,7 +5,7 @@ Install and build our yarn project and then build with SAM:
 1. `yarn install && yarn build`
 
 ## Sender 
-`sam local invoke waSender --event local/sqs-event.json  --parameter-overrides 'ParameterKey=UCHAT_TOKEN,ParameterValue=xxxxx`
+`sam local invoke WaSender --event local/sqs-event.json  --parameter-overrides 'ParameterKey=UCHAT_TOKEN,ParameterValue=xxxxx`
 
 Replace the `xxxxx` with the actual token
 

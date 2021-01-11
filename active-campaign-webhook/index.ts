@@ -14,7 +14,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
   const messageKey = event.pathParameters?.key || 'fallback'
   const { contact } : any = qs.parse(event.body || '')
   const { id, phone, first_name: firstName, last_name: lastName, fields } = contact
-  const name = firstName || lastName || 'Abundante'
+  const name = (firstName || lastName || 'Abundante').split(' ')[0]
   const linkBoleto = fields.link_do_boleto
   let message: string | undefined
 
