@@ -65,19 +65,12 @@ Resources:
       Policies:
         - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'
         - Statement:
-            - Sid: SSMGetParameterPolicy
-              Effect: Allow
-              Action:
-                - ssm:GetParameter
-              Resource: '*'
-        - Statement:
             - Sid: SQSQueuePolicy
               Effect: Allow
               Action:
                 - SQS:SendMessage
               Resource:
                 - !GetAtt WaMessageParserQueue.Arn
-                - !GetAtt WaMessageParserDLQ.Arn
   WaParser:
     Type: AWS::Serverless::Function
     Properties:
@@ -98,6 +91,12 @@ Resources:
         TargetArn: !GetAtt WaMessageParserDLQ.Arn
       Policies:
         - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'
+        - Statement:
+            - Sid: SSMGetParameterPolicy
+              Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: '*'
         - Statement:
             - Sid: SQSQueuePolicy
               Effect: Allow
