@@ -48,13 +48,6 @@ Resources:
       - nodejs12.x
       Description: Common layer for WaSender and Webhooks
       ContentUri: ./layer
-  NesoApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: 'NesoApi'
-      StageName: 'Prod'
-      OpenApiVersion: 3.0.0
-      DefinitionUri: './api.yml'
   ActiveCampaignWebhook:
     Type: AWS::Serverless::Function
     Properties:
@@ -64,8 +57,6 @@ Resources:
         PostMessage:
           Type: Api
           Properties:
-            RestApiId: 
-              Ref: NesoApi
             Path: /message/{key}
             Method: POST
       Environment:
