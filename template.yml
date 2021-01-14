@@ -20,6 +20,7 @@ Globals:
     Timeout: 10
     Layers:
       - !Ref CommLayer
+      - 'arn:aws:lambda:sa-east-1:580247275435:layer:LambdaInsightsExtension:12'
 
 
 Resources:
@@ -53,7 +54,13 @@ Resources:
       - nodejs12.x
       Description: Common layer for WaSender and Webhooks
       ContentUri: ./layer
-  
+  NesoApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: 'NesoApi'
+      StageName: 'Prod'
+      OpenApiVersion: 3.0.0
+      DefinitionUri: './api.yml'
   ActiveCampaignWebhook:
     Type: AWS::Serverless::Function
     Properties:
@@ -63,12 +70,15 @@ Resources:
         PostMessage:
           Type: Api
           Properties:
+            RestApiId: 
+              Ref: NesoApi
             Path: /message/{key}
             Method: POST
       Environment:
         Variables:
           QUEUE: !Ref WaMessageParserQueue
       Policies:
+        - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'
         - Statement:
             - Sid: SSMGetParameterPolicy
               Effect: Allow
@@ -101,6 +111,8 @@ Resources:
       DeadLetterQueue:
         Type: SQS
         TargetArn: !GetAtt WaMessageParserDLQ.Arn
+      Policies:
+        - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'
   WaSender:
     Type: AWS::Serverless::Function
     Properties:
@@ -121,3 +133,5 @@ Resources:
       DeadLetterQueue:
         Type: SQS
         TargetArn: !GetAtt WaMessageSenderDLQ.Arn
+      Policies:
+        - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'

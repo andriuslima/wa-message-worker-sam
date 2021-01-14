@@ -3,7 +3,7 @@ openapi: 3.0.0
 info:
   description: "API with webhooks to process events from Active Campaign"
   version: "1.0.0"
-  title: "WhatsApp Message Worker API"
+  title: "Neso API"
 paths:
   /message/{key}:
     post:
@@ -32,7 +32,6 @@ components:
             properties:
                 statusCode:
                     type: "integer"
-                    format: "int64"
                 body:   
                     type: "string"
         ActiveCampaignWebhookRequest:
@@ -40,7 +39,6 @@ components:
             properties:
                 contact:
                     type: "object"
-                    format: "int64"
                     properties:
                         first_name:
                             type: "string"
