@@ -43,7 +43,7 @@ async function parse (body: any): Promise<void> {
   }
 
   const sendMessageparams: SendMessageRequest = {
-    MessageBody: JSON.stringify({ id, phone, replacedMessage }),
+    MessageBody: JSON.stringify({ id, phone, message: replacedMessage }),
     QueueUrl: queue
   }
 
