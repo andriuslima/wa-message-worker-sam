@@ -40,12 +40,6 @@ Resources:
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt WaMessageSenderDLQ.Arn
         maxReceiveCount: 2
-  FallbackMessage:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: fallback
-      Type: String
-      Value: Hello {name}!
   CommLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
