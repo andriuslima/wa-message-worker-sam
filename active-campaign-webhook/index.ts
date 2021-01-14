@@ -15,6 +15,14 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
   const { contact } : any = qs.parse(event.body!)
 
   const { id, phone, first_name: firstName, last_name: lastName, fields } = contact
+
+  if (!phone) {
+    return callback(null, {
+      statusCode: 201,
+      body: 'Phone number not present on request body'
+    })
+  }
+
   const name = (firstName || lastName || 'Abundante').split(' ')[0]
   const linkBoleto = fields?.link_do_boleto
   const formatedPhone = phone.length === 8 ? '9' + phone : phone
@@ -43,7 +51,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
 
   console.log('Routing done!')
   return callback(null, {
-    statusCode: 200,
+    statusCode: 201,
     body: queueMessage
   })
 }
