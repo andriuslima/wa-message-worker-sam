@@ -3,29 +3,20 @@ import { SendMessageRequest } from 'aws-sdk/clients/sqs'
 import { SQS } from 'aws-sdk'
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import qs from 'qs'
-import replace from './utils/message-replace'
 
 const http = axios.create({ baseURL: process.env.UCHAT_URL || 'localhost:1234' })
 const uChatToken = process.env.UCHAT_TOKEN || 'no-token'
 const dlq = process.env.DLQ || 'dlq-url'
-const phPrefix = '{'
-const phSuffix = '}'
 
 export const handler: Handler = (event: SQSEvent) => {
   event.Records
     .map((record: SQSRecord) => record.body)
-    .forEach(body => { sendMessage(body).then(r => console.log(r)) })
+    .forEach(body => { sendMessage(body) })
 }
 
 const sendMessage = async (body: any) => {
   console.log(`SQS message body received: ${body}`)
-  const { message, phone, params } = JSON.parse(body)
-
-  const replacedMessage = replace(message, params, [phPrefix, phSuffix])
-
-  if (hasPlaceholders(replacedMessage)) {
-    return sendToDLQ(body, `params missing to complete message: ${replacedMessage}`)
-  }
+  const { message, phone } = JSON.parse(body)
 
   const config: AxiosRequestConfig = {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -35,10 +26,10 @@ const sendMessage = async (body: any) => {
     token: uChatToken,
     cmd: 'chat',
     to: phone + '@c.us',
-    msg: replacedMessage
+    msg: message
   })
 
-  console.log(`Sending message to ${phone} with content "${replacedMessage}"`)
+  console.log(`Sending message to ${phone} with content "${message.substring(0, 10)}..."`)
 
   const response: AxiosResponse = await http.post(`/${uChatToken}`, data, config)
 
@@ -76,9 +67,4 @@ function sendToDLQ (message: string, error: string) {
       console.log('message successfully routed to DLQ')
     }
   })
-}
-
-function hasPlaceholders (message: string) {
-  const matches = message.match(new RegExp(phPrefix + '\\w+' + phSuffix, 'g'))
-  return matches !== null && matches.length > 0
 }

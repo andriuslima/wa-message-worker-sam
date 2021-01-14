@@ -2,14 +2,9 @@
 First make sure you have `sam` cli on your path and also Docker uo and running
 
 Install and build our yarn project and then build with SAM:
-1. `yarn install && yarn build`
+1. `yarn install && yarn dev`
 
-## Sender 
-`sam local invoke WaSender --event local/sqs-event.json  --parameter-overrides 'ParameterKey=UCHAT_TOKEN,ParameterValue=xxxxx`
-
-Replace the `xxxxx` with the actual token
-
-### Webhook
+## Webhook
 
 `sam local start-api --profile xxxxx`
 
@@ -21,3 +16,11 @@ Replace the `xxxxx` with the actual token
 --data-urlencode 'contact[last_name]"=Maguire' \
 --data-urlencode 'contact[phone]=55999999999' \
 --data-urlencode 'contact[fields][link_do_boleto]=www.google.com'`
+
+## Parser
+`sam local invoke WaParser --event local/parser-sqs-event.json`
+
+## Sender 
+`sam local invoke WaSender --event local/sender-sqs-event.json  --parameter-overrides 'ParameterKey=UCHATTOKEN,ParameterValue=xxxxx`
+
+Replace the `xxxxx` with the actual token

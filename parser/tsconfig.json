@@ -1,11 +1,11 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../bin/sender",
+    "outDir": "../bin/parser",
     "rootDir": ".",
     "composite": true,
   },
   "include": [
-    "./*.ts",
+    "./*.ts"
   ]
 }

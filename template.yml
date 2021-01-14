@@ -14,27 +14,37 @@ Parameters:
 
 Globals:
   Function:
+    Handler: index.handler
     Runtime: nodejs12.x
     MemorySize: 128
     Timeout: 10
+    Layers:
+      - !Ref CommLayer
 
 
 Resources:
-  WaMessageDLQ:
+  WaMessageParserDLQ:
     Type: AWS::SQS::Queue
-  WaMessageQueue:
+  WaMessageParserQueue:
     Type: AWS::SQS::Queue
     Properties:
       RedrivePolicy:
-        deadLetterTargetArn: !GetAtt WaMessageDLQ.Arn
+        deadLetterTargetArn: !GetAtt WaMessageParserDLQ.Arn
+        maxReceiveCount: 2
+  WaMessageSenderDLQ:
+    Type: AWS::SQS::Queue
+  WaMessageSenderQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt WaMessageSenderDLQ.Arn
         maxReceiveCount: 2
   FallbackMessage:
     Type: AWS::SSM::Parameter
     Properties:
       Name: fallback
       Type: String
-      Value: Hello World!
-      Description: Olá {name}!
+      Value: Hello {name}!
   CommLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -43,13 +53,11 @@ Resources:
       - nodejs12.x
       Description: Common layer for WaSender and Webhooks
       ContentUri: ./layer
+  
   ActiveCampaignWebhook:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: bin/active-campaign-webhook/
-      Layers:
-        - !Ref CommLayer
-      Handler: index.handler
       Description: Endpoint to process whatsapp message events and send to queue
       Events:
         PostMessage:
@@ -59,7 +67,7 @@ Resources:
             Method: POST
       Environment:
         Variables:
-          QUEUE: !Ref WaMessageQueue
+          QUEUE: !Ref WaMessageParserQueue
       Policies:
         - Statement:
             - Sid: SSMGetParameterPolicy
@@ -73,27 +81,43 @@ Resources:
               Action:
                 - SQS:SendMessage
               Resource:
-                - !GetAtt WaMessageQueue.Arn
-                - !GetAtt WaMessageDLQ.Arn
+                - !GetAtt WaMessageParserQueue.Arn
+                - !GetAtt WaMessageParserDLQ.Arn
+  WaParser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: bin/parser/
+      Description: Function to parser WhatsApp messages and send to sender funtion
+      Events:
+        messageQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt WaMessageParserQueue.Arn
+            BatchSize: 10
+      Environment:
+        Variables:
+          DLQ: !Ref WaMessageParserDLQ
+          SENDER_QUEUE: !Ref WaMessageSenderQueue
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn: !GetAtt WaMessageParserDLQ.Arn
   WaSender:
     Type: AWS::Serverless::Function
     Properties:
+      Timeout: 15
       CodeUri: bin/sender/
-      Layers:
-        - !Ref CommLayer
-      Handler: index.handler
       Description: Function to send whatsapp message
       Events:
         messageQueueEvent:
           Type: SQS
           Properties:
-            Queue: !GetAtt WaMessageQueue.Arn
+            Queue: !GetAtt WaMessageSenderQueue.Arn
             BatchSize: 10
       Environment:
         Variables:
           UCHAT_URL: !Ref UCHATURL
           UCHAT_TOKEN: !Ref UCHATTOKEN
-          DLQ: !Ref WaMessageDLQ
+          DLQ: !Ref WaMessageSenderDLQ
       DeadLetterQueue:
         Type: SQS
-        TargetArn: !GetAtt WaMessageDLQ.Arn
+        TargetArn: !GetAtt WaMessageSenderDLQ.Arn
