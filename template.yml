@@ -148,3 +148,12 @@ Resources:
         TargetArn: !GetAtt WaMessageSenderDLQ.Arn
       Policies:
         - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'
+        - Statement:
+              - Sid: SQSQueuePolicy
+                Effect: Allow
+                Action:
+                  - SQS:SendMessage
+                  - SQS:ReceiveMessage
+                Resource:
+                  - !GetAtt WaMessageSenderDLQ.Arn
+                  - !GetAtt WaMessageSenderQueue.Arn
