@@ -1,5 +1,5 @@
 import { Handler, SQSEvent, SQSRecord } from 'aws-lambda'
-import { SendMessageRequest } from 'aws-sdk/clients/sqs'
+import {MessageAttributeValue, MessageBodyAttributeMap, SendMessageRequest} from 'aws-sdk/clients/sqs'
 import { SQS } from 'aws-sdk'
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import qs from 'qs'
@@ -49,15 +49,21 @@ async function sendMessage (body: any): Promise<void> {
 function sendToDLQ (message: string, error: string) {
   console.log(error)
   const sqs = new SQS()
-  const errorMessage = {
-    originalMessage: message,
-    error: error,
-    retryable: true
+  const attributes: MessageBodyAttributeMap = {
+    error: {
+      StringValue: error,
+      DataType: 'String'
+    },
+    retryable: {
+      StringValue: 'true',
+      DataType: 'String'
+    }
   }
 
   const params: SendMessageRequest = {
-    MessageBody: JSON.stringify(errorMessage),
-    QueueUrl: dlq
+    MessageBody: JSON.stringify(message),
+    QueueUrl: dlq,
+    MessageAttributes: attributes
   }
 
   sqs.sendMessage(params, (err, data) => {
