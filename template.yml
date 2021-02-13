@@ -137,7 +137,7 @@ Resources:
         CWSchedule:
           Type: Schedule
           Properties:
-            Schedule: 'rate(30 minute)'
+            Schedule: 'rate(30 minutes)'
             Name: SenderRetrySchedule
       Environment:
         Variables:
