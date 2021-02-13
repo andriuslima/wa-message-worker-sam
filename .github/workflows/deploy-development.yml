@@ -44,7 +44,7 @@ jobs:
           REPO: ${{ github.event.repository.name }}
         run: |
           STACK=`echo $REPO | tr "/" "-"`
-          STACKID=`$STACK-${{steps.aws.aws-account-id}}`
+          STACKID=`echo $STACK-${{steps.aws.aws-account-id}}`
           echo "::set-output name=stack::$STACKID"
           # Output variables to ensure their values are set correctly when ran
           echo "The region is ${{ secrets.AWS_REGION }}"
