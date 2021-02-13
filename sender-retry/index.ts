@@ -35,7 +35,7 @@ async function retrieveMessage (size: number): Promise<void> {
 async function processMessage (message: SQS.Message): Promise<void> {
   const { originalMessage, retryable } = JSON.parse(message.Body || '')
   if (retryable) {
-    sqs.sendMessage({ QueueUrl: queue, MessageBody: JSON.stringify(originalMessage) }, (err, data) => {
+    sqs.sendMessage({ QueueUrl: queue, MessageBody: originalMessage }, (err, data) => {
       if (err) {
         console.log(`Somethings went wrong when routing message to queue ${queue}`, data)
         throw new Error(err.message)
