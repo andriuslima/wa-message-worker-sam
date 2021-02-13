@@ -50,9 +50,9 @@ jobs:
 
       - run: python3 .github/utils/create-bucket.py \
           ${{ steps.vars.outputs.stack }} \
-          ${{ secrets.AWS_ACCESS_KEY_ID }} \
-          ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-          ${{ secrets.AWS_REGION }}
+          ${{ secrets.DEV_AWS_ACCESS_KEY_ID }} \
+          ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }} \
+          ${{ secrets.DEV_AWS_REGION }}
         name: Create Bucket
 
       - name: Deploy
