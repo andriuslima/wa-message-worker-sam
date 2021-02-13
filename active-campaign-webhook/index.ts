@@ -25,8 +25,8 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
 
   const name = (firstName || lastName || 'Abundante').split(' ')[0]
   const linkBoleto = fields?.link_do_boleto
-  const formatedPhone = phone.length === 8 ? '9' + phone : phone
-  const phoneNumber = parsePhoneNumber(formatedPhone, 'BR')?.format('E.164').replace('+', '')
+  const formattedPhone = phone.length === 8 ? '9' + phone : phone
+  const phoneNumber = parsePhoneNumber(formattedPhone, 'BR')?.format('E.164').replace('+', '')
 
   console.log(`Active campaign event received for contact: ${id}:${name}:${phoneNumber}`)
   console.log(`Message key received: ${key}`)
@@ -50,6 +50,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
     })
 
   console.log('Routing done!')
+
   return callback(null, {
     statusCode: 201,
     body: queueMessage

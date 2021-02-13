@@ -32,6 +32,7 @@
   "workspaces": [
     "active-campaign-webhook",
     "parser",
-    "sender"
+    "sender",
+    "sender-retry"
   ]
 }

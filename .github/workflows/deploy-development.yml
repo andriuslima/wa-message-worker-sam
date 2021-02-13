@@ -1,0 +1,65 @@
+name: Deploy to Development
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy SAM stack to AWS
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - run: |
+          sudo apt-get install python3-setuptools &&
+          python3 -m pip install boto3 &&
+          curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.10
+        name: Install dependencies
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Yarn Build
+        run: yarn install && yarn build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.DEV_AWS_REGION }}
+      
+      - name: Validate
+        run: sam validate
+
+      - name: Configure variables
+        shell: bash
+        id: vars
+        env:
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          STACK=`echo $REPO | tr "/" "-"`
+          echo "::set-output name=stack::$STACK"
+          # Output variables to ensure their values are set correctly when ran
+          echo "The region is ${{ secrets.AWS_REGION }}"
+          echo "The stack is $STACK"
+
+      - run: python3 .github/utils/create-bucket.py \
+          ${{ steps.vars.outputs.stack }} \
+          ${{ secrets.AWS_ACCESS_KEY_ID }} \
+          ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+          ${{ secrets.AWS_REGION }}
+        name: Create Bucket
+
+      - name: Deploy
+        run: |
+          sam deploy \
+            --template-file .aws-sam/build/template.yaml \
+            --stack-name ${{ steps.vars.outputs.stack }} \
+            --s3-bucket ${{ steps.vars.outputs.stack }} \
+            --parameter-overrides 'ParameterKey=UCHATTOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }}' \
+            --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM

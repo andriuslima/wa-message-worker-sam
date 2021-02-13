@@ -21,6 +21,8 @@ export const handler: Handler = (event: SQSEvent) => {
 async function parse (body: any): Promise<void> {
   const { id, phone, key, params } = JSON.parse(body)
 
+  console.log(`Message received for: ${id}:${phone}:${key}`)
+
   let message: string | undefined
   await ssm.getParameter({ Name: key! })
     .promise()
@@ -42,12 +44,12 @@ async function parse (body: any): Promise<void> {
     return sendToDLQ(body, 'params missing to complete message')
   }
 
-  const sendMessageparams: SendMessageRequest = {
+  const sendMessageParams: SendMessageRequest = {
     MessageBody: JSON.stringify({ id, phone, message: replacedMessage }),
     QueueUrl: queue
   }
 
-  await sqs.sendMessage(sendMessageparams)
+  await sqs.sendMessage(sendMessageParams)
     .promise()
     .then((data: PromiseResult<SendMessageResult, AWSError>) => {
       console.log(data)

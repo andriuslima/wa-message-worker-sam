@@ -14,7 +14,7 @@ export const handler: Handler = (event: SQSEvent) => {
     .forEach(body => { sendMessage(body) })
 }
 
-const sendMessage = async (body: any) => {
+async function sendMessage (body: any): Promise<void> {
   console.log(`SQS message body received: ${body}`)
   const { message, phone } = JSON.parse(body)
 
@@ -51,7 +51,8 @@ function sendToDLQ (message: string, error: string) {
   const sqs = new SQS()
   const errorMessage = {
     originalMessage: message,
-    error: error
+    error: error,
+    retryable: true
   }
 
   const params: SendMessageRequest = {
@@ -62,7 +63,7 @@ function sendToDLQ (message: string, error: string) {
   sqs.sendMessage(params, (err, data) => {
     if (err) {
       console.log(`Somethings went wrong when sending error message to DLQ ${dlq}`, data)
-      throw new Error(error)
+      throw new Error(err.message)
     } else {
       console.log('message successfully routed to DLQ')
     }

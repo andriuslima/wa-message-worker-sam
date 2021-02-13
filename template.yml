@@ -127,3 +127,24 @@ Resources:
         TargetArn: !GetAtt WaMessageSenderDLQ.Arn
       Policies:
         - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'
+
+  WaSenderRetry:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: bin/sender-retry/
+      Description: Function to reprocees message from DLQ
+        Events:
+          CWSchedule:
+            Type: Schedule
+            Properties:
+              Schedule: 'rate(30 minute)'
+              Name: SenderRetrySchedule
+        Environment:
+          Variables:
+            DLQ: !Ref WaMessageSenderDLQ
+            QUEUE: !Ref WaMessageSenderQueue
+        DeadLetterQueue:
+          Type: SQS
+          TargetArn: !GetAtt WaMessageSenderDLQ.Arn
+        Policies:
+          - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'

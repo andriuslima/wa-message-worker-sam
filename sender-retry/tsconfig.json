@@ -1,11 +1,11 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../bin/active-campaign-webhook",
+    "outDir": "../bin/sender-retry",
     "rootDir": ".",
     "composite": true,
   },
   "include": [
-    "./*.ts"
+    "./*.ts",
   ]
 }
