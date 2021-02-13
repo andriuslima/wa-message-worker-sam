@@ -10,8 +10,5 @@
     "dev": "sucrase . -d ../bin/sender-retry --transforms typescript,imports && cp package.json ../bin/sender-retry/",
     "lint": "eslint . --ext .ts",
     "build": "tsc && cp package.json ../bin/sender-retry/"
-  },
-  "dependencies": {
-    "axios": "^0.21.1"
   }
 }
