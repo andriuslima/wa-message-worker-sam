@@ -34,7 +34,8 @@ export const handler: Handler = (_: ScheduledEvent) => {
 }
 
 async function retrieveMessages (size: number): Promise<void> {
-  sqs.receiveMessage({ QueueUrl: dlq, MaxNumberOfMessages: size }, (err: AWSError, data: ReceiveMessageResult) => {
+  const ops = { QueueUrl: dlq, MaxNumberOfMessages: size, MessageAttributeNames: ['retryable'] }
+  sqs.receiveMessage(ops, (err: AWSError, data: ReceiveMessageResult) => {
     if (err) {
       console.log(`Somethings went wrong when receiving message from DLQ ${dlq}`, data)
       throw new Error(err.message)
@@ -45,9 +46,7 @@ async function retrieveMessages (size: number): Promise<void> {
 
 async function processMessage (message: SQS.Message): Promise<void> {
   const retryable = message.MessageAttributes?.retryable.StringValue
-  console.log(JSON.stringify(message.MessageAttributes))
   console.log(JSON.stringify(message))
-  console.log(`Message retryable: ${retryable}`)
   if (retryable === 'true') {
     await retryMessage(message)
   } else {
