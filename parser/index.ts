@@ -1,6 +1,6 @@
 import { Handler, SQSEvent, SQSRecord } from 'aws-lambda'
 import { GetParameterResult } from 'aws-sdk/clients/ssm'
-import { SendMessageRequest, SendMessageResult } from 'aws-sdk/clients/sqs'
+import {MessageBodyAttributeMap, SendMessageRequest, SendMessageResult} from 'aws-sdk/clients/sqs'
 import { SQS, SSM, AWSError } from 'aws-sdk'
 import { PromiseResult } from 'aws-sdk/lib/request'
 
@@ -76,15 +76,18 @@ function replace (data: string[], str: string = ''): string {
   return str
 }
 
-function sendToDLQ (message: any, error: string): void {
+function sendToDLQ (message: string, error: string): void {
   console.log(error)
-  const errorMessage = {
-    originalMessage: message,
-    error: error
+  const attributes: MessageBodyAttributeMap = {
+    error: {
+      StringValue: error,
+      DataType: 'String'
+    }
   }
 
   const params: SendMessageRequest = {
-    MessageBody: JSON.stringify(errorMessage),
+    MessageBody: message,
+    MessageAttributes: attributes,
     QueueUrl: dlq
   }
 
