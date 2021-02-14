@@ -14,7 +14,7 @@ export const handler: Handler = (event: SQSEvent) => {
     .forEach(body => { sendMessage(body) })
 }
 
-async function sendMessage (body: any): Promise<void> {
+async function sendMessage (body: string): Promise<void> {
   console.log(`SQS message body received: ${body}`)
   const { message, phone } = JSON.parse(body)
 
@@ -61,7 +61,7 @@ function sendToDLQ (message: string, error: string) {
   }
 
   const params: SendMessageRequest = {
-    MessageBody: JSON.stringify(message),
+    MessageBody: message,
     QueueUrl: dlq,
     MessageAttributes: attributes
   }

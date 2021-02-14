@@ -139,6 +139,12 @@ Resources:
           Properties:
             Schedule: 'rate(30 minutes)'
             Name: SenderRetrySchedule
+        CWScheduleForTesting:
+          Type: Schedule
+          Properties:
+            Schedule: 'rate(1 minute)'
+            Name: SenderRetrySchedule
+            Enabled: False
       Environment:
         Variables:
           DLQ: !Ref WaMessageSenderDLQ
