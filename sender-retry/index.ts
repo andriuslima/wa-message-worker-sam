@@ -45,6 +45,7 @@ async function retrieveMessages (size: number): Promise<void> {
 
 async function processMessage (message: SQS.Message): Promise<void> {
   const retryable = message.MessageAttributes?.retryable.StringValue
+  console.log(message.MessageAttributes)
   console.log(`Message retryable: ${retryable}`)
   if (retryable === 'true') {
     await retryMessage(message)
