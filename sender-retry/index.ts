@@ -14,10 +14,18 @@ export const handler: Handler = (_: ScheduledEvent) => {
       throw new Error(err.message)
     }
     const numberOfMessage = (data.Attributes?.ApproximateNumberOfMessages || batchSize) as number
+
+    if (numberOfMessage < 1) {
+      console.log('DLQ is empty, returning...')
+      return
+    }
+
     let numberOfRetrieves = Math.floor(numberOfMessage / batchSize)
     if (numberOfMessage % batchSize > 0) {
       numberOfRetrieves += 1
     }
+
+    console.log(`Retrieving ${numberOfRetrieves}x (batches of ${batchSize}`)
 
     for (let i = 0; i < numberOfRetrieves; i++) {
       retrieveMessages(batchSize)
@@ -39,17 +47,22 @@ async function processMessage (message: SQS.Message): Promise<void> {
   const retryable = (message.MessageAttributes?.retryable.StringValue || 'false').toLowerCase()
   if (retryable === 'true') {
     await retryMessage(message)
+  } else {
+    console.log(`message ${message.MessageId} is not retryable`)
   }
 }
 
 async function retryMessage (message: SQS.Message): Promise<void> {
-  const { originalMessage } = JSON.parse(message.Body || '')
-  sqs.sendMessage({ QueueUrl: queue, MessageBody: originalMessage }, (err, data) => {
+  if (!message.Body) {
+    console.log(`message ${message.MessageId} with empty body`)
+  }
+  const body = message.Body!
+  sqs.sendMessage({ QueueUrl: queue, MessageBody: body }, (err, data) => {
     if (err) {
       console.log(`Somethings went wrong when routing message to queue ${queue}`, data)
       throw new Error(err.message)
     } else {
-      console.log('message successfully routed to queue')
+      console.log(`message ${message.MessageId} successfully routed to queue`)
     }
   })
 
