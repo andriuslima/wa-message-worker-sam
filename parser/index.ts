@@ -1,6 +1,6 @@
 import { Handler, SQSEvent, SQSRecord } from 'aws-lambda'
 import { GetParameterResult } from 'aws-sdk/clients/ssm'
-import {MessageBodyAttributeMap, SendMessageRequest, SendMessageResult} from 'aws-sdk/clients/sqs'
+import { MessageBodyAttributeMap, SendMessageRequest, SendMessageResult } from 'aws-sdk/clients/sqs'
 import { SQS, SSM, AWSError } from 'aws-sdk'
 import { PromiseResult } from 'aws-sdk/lib/request'
 
