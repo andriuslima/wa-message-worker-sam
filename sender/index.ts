@@ -1,5 +1,5 @@
 import { Handler, SQSEvent, SQSRecord } from 'aws-lambda'
-import {MessageAttributeValue, MessageBodyAttributeMap, SendMessageRequest} from 'aws-sdk/clients/sqs'
+import { MessageBodyAttributeMap, SendMessageRequest } from 'aws-sdk/clients/sqs'
 import { SQS } from 'aws-sdk'
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import qs from 'qs'

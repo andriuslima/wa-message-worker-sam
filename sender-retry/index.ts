@@ -7,7 +7,7 @@ const dlq = process.env.DLQ || 'dlq-url'
 const queue = process.env.QUEUE || 'dlq-url'
 const batchSize = 10
 
-export const handler: Handler = (event: ScheduledEvent) => {
+export const handler: Handler = (_: ScheduledEvent) => {
   sqs.getQueueAttributes({ QueueUrl: dlq }, (err, data) => {
     if (err) {
       console.log(`Somethings went wrong when retrieving dlq attributes from DLQ ${dlq}`, data)
@@ -53,7 +53,7 @@ async function retryMessage (message: SQS.Message): Promise<void> {
     }
   })
 
-  sqs.deleteMessage({ QueueUrl: dlq, ReceiptHandle: message.ReceiptHandle || '' }, (err, data) => {
+  sqs.deleteMessage({ QueueUrl: dlq, ReceiptHandle: message.ReceiptHandle || '' }, (err, _) => {
     if (err) {
       throw new Error(err.message)
     }
