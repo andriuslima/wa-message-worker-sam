@@ -25,7 +25,7 @@ export const handler: Handler = (_: ScheduledEvent) => {
       numberOfRetrieves += 1
     }
 
-    console.log(`Retrieving ${numberOfRetrieves}x (batches of ${batchSize}`)
+    console.log(`Retrieving ${numberOfRetrieves}x (batches of ${batchSize})`)
 
     for (let i = 0; i < numberOfRetrieves; i++) {
       retrieveMessages(batchSize)
@@ -44,7 +44,8 @@ async function retrieveMessages (size: number): Promise<void> {
 }
 
 async function processMessage (message: SQS.Message): Promise<void> {
-  const retryable = (message.MessageAttributes?.retryable.StringValue || 'false').toLowerCase()
+  const retryable = message.MessageAttributes?.retryable.StringValue
+  console.log(`Message retryable: ${retryable}`)
   if (retryable === 'true') {
     await retryMessage(message)
   } else {
