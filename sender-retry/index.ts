@@ -40,6 +40,7 @@ async function retrieveMessages (size: number): Promise<void> {
       console.log(`Somethings went wrong when receiving message from DLQ ${dlq}`, data)
       throw new Error(err.message)
     }
+    console.log(`retrying ${data.Messages?.length} messages`)
     data.Messages?.forEach(message => { processMessage(message) })
   })
 }

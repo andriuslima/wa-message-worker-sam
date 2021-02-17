@@ -134,15 +134,16 @@ Resources:
       CodeUri: bin/sender-retry/
       Description: Function to reprocees message from DLQ
       Events:
-        CWSchedule:
+        CronSchedule:
           Type: Schedule
           Properties:
-            Schedule: 'rate(30 minutes)'
+            Schedule: 'rate(23 hours)'
             Name: SenderRetrySchedule
-        CWScheduleForTesting:
+            Enabled: True
+        CronScheduleForTesting:
           Type: Schedule
           Properties:
-            Schedule: 'rate(1 minute)'
+            Schedule: 'rate(5 minutes)'
             Name: SenderRetryScheduleForTesting
             Enabled: False
       Environment:
