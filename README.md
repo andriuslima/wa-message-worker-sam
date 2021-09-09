@@ -1,3 +1,7 @@
+[![CodeQL](https://github.com/Andriuslima/wa-message-worker-sam/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/Andriuslima/wa-message-worker-sam/actions/workflows/codeql-analysis.yml)
+[![Deploy to Development](https://github.com/Andriuslima/wa-message-worker-sam/actions/workflows/deploy-development.yml/badge.svg?branch=main)](https://github.com/Andriuslima/wa-message-worker-sam/actions/workflows/deploy-development.yml)
+[![Deploy to Production](https://github.com/Andriuslima/wa-message-worker-sam/actions/workflows/deploy-production.yml/badge.svg?branch=main)](https://github.com/Andriuslima/wa-message-worker-sam/actions/workflows/deploy-production.yml)
+
 # How to run locally
 First make sure you have `sam` cli on your path and also Docker uo and running
 
