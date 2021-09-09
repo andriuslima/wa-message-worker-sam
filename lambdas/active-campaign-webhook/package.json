@@ -9,8 +9,5 @@
   "scripts": {
     "build": "tsc && cp package.json ../../bin/active-campaign-webhook/",
     "lint": "eslint && prettier src/ --check"
-  },
-  "dependencies": {
-    "libphonenumber-js": "^1.9.7"
   }
 }

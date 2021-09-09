@@ -8,5 +8,8 @@
   "scripts": {
     "build": "tsc && cp package.json ../../bin/parser/",
     "lint": "eslint && prettier src/ --check"
+  },
+  "dependencies": {
+    "libphonenumber-js": "^1.9.7"
   }
 }

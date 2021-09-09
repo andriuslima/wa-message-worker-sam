@@ -1,11 +1,9 @@
 import { APIGatewayEvent, Handler } from 'aws-lambda';
 import { SQS } from 'aws-sdk';
-import { SendMessageRequest } from 'aws-sdk/clients/sqs';
-import parsePhoneNumber from 'libphonenumber-js';
-import qs from 'qs';
+import { Queue } from './queue';
 
-const sqs = new SQS();
 const queueUrl = process.env.QUEUE || 'localhost';
+const queue = new Queue(new SQS(), queueUrl);
 
 export const handler: Handler = async (event: APIGatewayEvent) => {
   if (!event.pathParameters || !event.pathParameters.key) {
@@ -17,7 +15,7 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
   }
 
   const key = event.pathParameters.key;
-  const { contact }: any = qs.parse(event.body);
+  const { contact }: any = JSON.parse(event.body);
 
   const { id, phone, first_name: firstName, last_name: lastName, fields } = contact;
 
@@ -30,25 +28,14 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
 
   const name = (firstName || lastName || 'Abundante').split(' ')[0];
   const linkBoleto = fields?.link_do_boleto;
-  const formattedPhone = phone.length === 8 ? '9' + phone : phone;
-  const phoneNumber = parsePhoneNumber(formattedPhone, 'BR')?.format('E.164').replace('+', '');
 
-  console.log(`Active campaign event received for contact: ${id}:${name}:${phoneNumber}`);
+  console.log(`Active campaign event received for contact: ${id}:${name}:${phone}`);
   console.log(`Message key received: ${key}`);
 
-  const messageBody = JSON.stringify({
-    id,
-    phone: phoneNumber,
-    key,
-    params: { name, linkBoleto },
-  });
-  const params: SendMessageRequest = {
-    MessageBody: messageBody,
-    QueueUrl: queueUrl,
-  };
+  const messageBody = JSON.stringify({ id, phone, key, params: { name, linkBoleto } });
 
   console.log('Routing request to queue...');
-  await sqs.sendMessage(params).promise();
+  await queue.send(messageBody);
 
   console.log('Routing done!');
 

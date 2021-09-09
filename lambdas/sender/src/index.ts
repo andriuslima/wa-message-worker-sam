@@ -1,14 +1,14 @@
 import { Handler, SQSEvent } from 'aws-lambda';
 import { SQS } from 'aws-sdk';
-import { MessageBodyAttributeMap, SendMessageRequest } from 'aws-sdk/clients/sqs';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import qs from 'qs';
+import axios from 'axios';
+import { Queue } from './queue';
+import { UChat } from './uchat';
 
-const http = axios.create({
-  baseURL: process.env.UCHAT_URL || 'localhost:1234',
-});
+const http = axios.create({ baseURL: process.env.UCHAT_URL || 'localhost:1234' });
 const uChatToken = process.env.UCHAT_TOKEN || 'no-token';
+const uchat = new UChat(http, uChatToken);
 const dlq = process.env.DLQ || 'dlq-url';
+const queue = new Queue(new SQS(), dlq);
 
 export const handler: Handler = async (event: SQSEvent) => {
   for (const record of event.Records) {
@@ -20,11 +20,7 @@ async function sendMessage(body: string): Promise<void> {
   console.log(`SQS message body received: ${body}`);
   const { message, phone } = JSON.parse(body);
 
-  const config: AxiosRequestConfig = {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  };
-
-  const data = qs.stringify({
+  const data = JSON.stringify({
     token: uChatToken,
     cmd: 'chat',
     to: phone + '@c.us',
@@ -33,47 +29,17 @@ async function sendMessage(body: string): Promise<void> {
 
   console.log(`Sending message to ${phone} with content "${message.substring(0, 10)}..."`);
 
-  const response: AxiosResponse = await http.post(`/${uChatToken}`, data, config);
+  const response = await uchat.send(data);
 
   console.log(`http request response status ${response.statusText}: ${JSON.stringify(response.data)}`);
 
   if (response.status !== 200) {
-    return sendToDLQ(body, `uChat status response: ${response.statusText}`);
+    return queue.sendToDLQ(body, `uChat status response: ${response.statusText}`);
   }
 
   if (response.data.status === 'offline') {
-    return sendToDLQ(body, `uChat data status response: ${response.data.status}`);
+    return queue.sendToDLQ(body, `uChat data status response: ${response.data.status}`);
   }
 
   console.log(`Message sent to ${phone}`);
-}
-
-function sendToDLQ(message: string, error: string) {
-  console.log(error);
-  const sqs = new SQS();
-  const attributes: MessageBodyAttributeMap = {
-    error: {
-      StringValue: error,
-      DataType: 'String',
-    },
-    retryable: {
-      StringValue: 'true',
-      DataType: 'String',
-    },
-  };
-
-  const params: SendMessageRequest = {
-    MessageBody: message,
-    QueueUrl: dlq,
-    MessageAttributes: attributes,
-  };
-
-  sqs.sendMessage(params, (err, data) => {
-    if (err) {
-      console.log(`Somethings went wrong when sending error message to DLQ ${dlq}`, data);
-      throw new Error(err.message);
-    } else {
-      console.log('message successfully routed to DLQ');
-    }
-  });
 }
