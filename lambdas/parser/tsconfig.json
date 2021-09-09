@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../bin/parser",
+    "rootDir": ".",
+    "composite": true
+  },
+  "include": [
+    "./*.ts"
+  ]
+}

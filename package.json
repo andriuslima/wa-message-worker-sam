@@ -2,11 +2,9 @@
   "private": true,
   "name": "wa-message-worker-sam",
   "scripts": {
-    "dev": "yarn workspaces -pt run dev",
     "build": "yarn workspaces -pt run build",
     "lint": "yarn workspaces -pt run lint",
     "layer": "yarn install --modules-folder layer/nodejs/node_modules --no-progress --non-interactive --production --silent",
-    "postdev": "yarn lint && yarn layer && sam build",
     "postbuild": "yarn lint && yarn layer && sam build"
   },
   "devDependencies": {
@@ -20,7 +18,6 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "sucrase": "^3.17.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.0.3"
   },
@@ -30,9 +27,6 @@
     "qs": "^6.9.4"
   },
   "workspaces": [
-    "active-campaign-webhook",
-    "parser",
-    "sender",
-    "sender-retry"
+    "lambdas/*"
   ]
 }

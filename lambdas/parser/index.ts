@@ -12,10 +12,10 @@ const queue = process.env.SENDER_QUEUE || 'sender-queue-url'
 const phPrefix = '{'
 const phSuffix = '}'
 
-export const handler: Handler = (event: SQSEvent) => {
-  event.Records
+export const handler: Handler = async (event: SQSEvent) => {
+  await event.Records
     .map((record: SQSRecord) => record.body)
-    .forEach(body => { parse(body) })
+    .forEach(body => parse(body))
 }
 
 async function parse (body: any): Promise<void> {

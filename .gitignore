@@ -223,3 +223,4 @@ modules.xml
 .aws-sam
 bin/
 *.code-workspace
+.DS_Store

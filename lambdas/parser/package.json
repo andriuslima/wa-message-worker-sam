@@ -1,0 +1,12 @@
+{
+  "name": "parser",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Andrius Lima",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc && cp package.json ../../bin/parser/",
+    "lint": "eslint  --ext .ts"
+  }
+}

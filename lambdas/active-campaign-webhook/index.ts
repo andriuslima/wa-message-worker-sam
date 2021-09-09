@@ -1,7 +1,6 @@
-import { Handler, APIGatewayEvent, Context, Callback } from 'aws-lambda'
-import { AWSError, SQS } from 'aws-sdk'
-import { SendMessageRequest, SendMessageResult } from 'aws-sdk/clients/sqs'
-import { PromiseResult } from 'aws-sdk/lib/request'
+import { APIGatewayEvent, Callback, Context, Handler } from 'aws-lambda'
+import { SQS } from 'aws-sdk'
+import { SendMessageRequest } from 'aws-sdk/clients/sqs'
 import qs from 'qs'
 import parsePhoneNumber from 'libphonenumber-js'
 
@@ -9,10 +8,16 @@ const sqs = new SQS()
 const queueUrl = process.env.QUEUE || 'localhost'
 
 export const handler: Handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
-  validateRequest(event)
+  if (!event.pathParameters || !event.pathParameters.key) {
+    throw new Error('Message key not present on request path parameters')
+  }
 
-  const key = event.pathParameters!.key
-  const { contact } : any = qs.parse(event.body!)
+  if (!event.body) {
+    throw new Error('Body not present request')
+  }
+
+  const key = event.pathParameters.key
+  const { contact }: any = qs.parse(event.body)
 
   const { id, phone, first_name: firstName, last_name: lastName, fields } = contact
 
@@ -31,38 +36,19 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context,
   console.log(`Active campaign event received for contact: ${id}:${name}:${phoneNumber}`)
   console.log(`Message key received: ${key}`)
 
-  const queueMessage = JSON.stringify({ id, phone: phoneNumber, key, params: { name, linkBoleto } })
+  const messageBody = JSON.stringify({ id, phone: phoneNumber, key, params: { name, linkBoleto } })
   const params: SendMessageRequest = {
-    MessageBody: queueMessage,
+    MessageBody: messageBody,
     QueueUrl: queueUrl
   }
 
   console.log('Routing request to queue...')
   await sqs.sendMessage(params)
-    .promise()
-    .then((data: PromiseResult<SendMessageResult, AWSError>) => {
-      console.log(data)
-    })
-    .catch((error: AWSError) => {
-      console.log(`Somethings went wrong when sending message to SQS ${queueUrl}`)
-      console.log(error, error.stack)
-      throw new Error(error.message)
-    })
 
   console.log('Routing done!')
 
   return callback(null, {
     statusCode: 201,
-    body: queueMessage
+    body: messageBody
   })
-}
-
-function validateRequest (event: APIGatewayEvent) {
-  if (!event.pathParameters || !event.pathParameters.key) {
-    throw new Error('Message key not present on request path parameters')
-  }
-
-  if (!event.body) {
-    throw new Error('Body not present request')
-  }
 }
