@@ -3,6 +3,7 @@ import { SQS } from 'aws-sdk';
 import axios from 'axios';
 import { Queue } from './queue';
 import { UChat } from './uchat';
+import qs from 'qs';
 
 const http = axios.create({ baseURL: process.env.UCHAT_URL || 'localhost:1234' });
 const uChatToken = process.env.UCHAT_TOKEN || 'no-token';
@@ -20,7 +21,7 @@ async function sendMessage(body: string): Promise<void> {
   console.log(`SQS message body received: ${body}`);
   const { message, phone } = JSON.parse(body);
 
-  const data = JSON.stringify({
+  const data = qs.stringify({
     token: uChatToken,
     cmd: 'chat',
     to: phone + '@c.us',
