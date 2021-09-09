@@ -21,9 +21,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build
-        run: yarn build
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         id: aws
@@ -31,6 +28,9 @@ jobs:
           aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.DEV_AWS_REGION }}
+
+      - name: Build
+        run: yarn build
 
       - name: Configure variables
         shell: bash
