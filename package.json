@@ -27,8 +27,7 @@
   },
   "dependencies": {
     "aws-sdk": "2.817.0",
-    "aws-sqs": "^0.0.6",
-    "qs": "^6.9.4"
+    "aws-sqs": "^0.0.6"
   },
   "workspaces": [
     "lambdas/*"

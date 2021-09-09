@@ -1,6 +1,7 @@
 import { APIGatewayEvent, Handler } from 'aws-lambda';
 import { SQS } from 'aws-sdk';
 import { Queue } from './queue';
+import qs from 'qs';
 
 const queueUrl = process.env.QUEUE || 'localhost';
 const queue = new Queue(new SQS(), queueUrl);
@@ -15,7 +16,7 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
   }
 
   const key = event.pathParameters.key;
-  const { contact }: any = JSON.parse(event.body);
+  const { contact }: any = qs.parse(event.body);
 
   const { id, phone, first_name: firstName, last_name: lastName, fields } = contact;
 
