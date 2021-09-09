@@ -2,14 +2,16 @@
 [![Deploy to Development](https://github.com/Andriuslima/wa-message-worker-sam/actions/workflows/deploy-development.yml/badge.svg?branch=main)](https://github.com/Andriuslima/wa-message-worker-sam/actions/workflows/deploy-development.yml)
 [![Deploy to Production](https://github.com/Andriuslima/wa-message-worker-sam/actions/workflows/deploy-production.yml/badge.svg?branch=main)](https://github.com/Andriuslima/wa-message-worker-sam/actions/workflows/deploy-production.yml)
 
-# How to run locally
-First make sure you have `sam` cli on your path and also Docker uo and running
+### Dependencie
+- yarn = ^1.22.10
+- nodejs = 14
+- aws sam - ^1.24.1
+- docker = ^20.10.8
 
-Install and build our yarn project and then build with SAM:
-1. `yarn install && yarn dev`
+# How to run locally
+Build the application with: `yarn build`
 
 ## Webhook
-
 `sam local start-api --profile xxxxx`
 
 `curl --location --request POST 'http://127.0.0.1:3000/message/fallback/' \

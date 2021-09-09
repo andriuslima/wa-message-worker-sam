@@ -8,6 +8,6 @@
   "private": true,
   "scripts": {
     "build": "tsc && cp package.json ../../bin/sender-retry/",
-    "lint": "eslint  --ext .ts"
+    "lint": "eslint && prettier src/ --check"
   }
 }

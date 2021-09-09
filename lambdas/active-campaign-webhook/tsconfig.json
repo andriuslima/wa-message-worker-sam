@@ -2,10 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../bin/active-campaign-webhook",
-    "rootDir": ".",
+    "rootDir": "src",
     "composite": true
   },
   "include": [
-    "./*.ts"
+    "src/"
   ]
 }

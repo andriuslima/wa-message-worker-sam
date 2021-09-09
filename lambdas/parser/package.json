@@ -7,6 +7,6 @@
   "private": true,
   "scripts": {
     "build": "tsc && cp package.json ../../bin/parser/",
-    "lint": "eslint  --ext .ts"
+    "lint": "eslint && prettier src/ --check"
   }
 }

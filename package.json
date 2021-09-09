@@ -2,10 +2,11 @@
   "private": true,
   "name": "wa-message-worker-sam",
   "scripts": {
+    "prebuild": "yarn install",
     "build": "yarn workspaces -pt run build",
     "lint": "yarn workspaces -pt run lint",
     "layer": "yarn install --modules-folder layer/nodejs/node_modules --no-progress --non-interactive --production --silent",
-    "postbuild": "yarn lint && yarn layer && sam build"
+    "postbuild": "yarn lint && yarn layer && sam validate && sam build"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.63",
@@ -15,11 +16,14 @@
     "@typescript-eslint/parser": "^4.12.0",
     "eslint": "^7.17.0",
     "eslint-config-standard": "^16.0.2",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-prettier": "^3.4.0",
     "ts-node": "^9.1.1",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.3",
+    "prettier": "^2.3.2"
   },
   "dependencies": {
     "aws-sdk": "2.817.0",
