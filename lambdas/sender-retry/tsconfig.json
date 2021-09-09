@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../bin/sender-retry",
-    "rootDir": ".",
+    "rootDir": "src/",
     "composite": true
   },
   "include": [
