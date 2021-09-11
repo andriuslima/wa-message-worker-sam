@@ -19,9 +19,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.DEV_AWS_REGION }}
 
-      - name: Build
-        run: yarn build
-
       - name: Configure variables
         shell: bash
         id: vars
@@ -37,5 +34,5 @@ jobs:
       - name: Deploy
         run: |
           aws cloudformation deploy \
-          --template-file infrastructure/dynamodb.json \
+          --template-file infrastructure/dynamoDB.json \
           --stack-name ${{ steps.vars.outputs.stack }}
