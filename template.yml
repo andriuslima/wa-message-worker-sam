@@ -22,7 +22,6 @@ Globals:
       - !Ref CommLayer
       - 'arn:aws:lambda:sa-east-1:580247275435:layer:LambdaInsightsExtension:12'
 
-
 Resources:
   WaMessageParserDLQ:
     Type: AWS::SQS::Queue
