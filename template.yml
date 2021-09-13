@@ -89,6 +89,7 @@ Resources:
         Variables:
           DLQ: !Ref WaMessageParserDLQ
           SENDER_QUEUE: !Ref WaMessageSenderQueue
+          TABLENAME: !Ref TABLENAME
       DeadLetterQueue:
         Type: SQS
         TargetArn: !GetAtt WaMessageParserDLQ.Arn

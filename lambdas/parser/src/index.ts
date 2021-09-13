@@ -7,7 +7,7 @@ import { Queue } from './queue';
 
 const dlq = process.env.DLQ || 'dlq-url';
 const senderQueue = process.env.SENDER_QUEUE || 'sender-queue-url';
-const table = process.env.TABLE_NAME || 'table-name';
+const table = process.env.TABLENAME || 'table-name';
 const queue = new Queue(new SQS(), senderQueue, dlq);
 const db = new DB(new AWS.DynamoDB.DocumentClient(), table);
 const formatter = new Formatter();
