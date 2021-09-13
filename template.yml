@@ -11,7 +11,7 @@ Parameters:
     Type: String
     Description: uChat Token
     Default: 123abc
-  TABLE_NAME:
+  TABLENAME:
     Type: String
     Description: DynamoDB table name that contains the messages
     Default: MessageValuesTable
@@ -102,7 +102,7 @@ Resources:
               - dynamodb:GetItem
               - dynamodb:Query
             Resource:
-              - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TABLE_NAME}*"
+              - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TABLENAME}*"
         - Statement:
             - Sid: SSMGetParameterPolicy
               Effect: Allow
