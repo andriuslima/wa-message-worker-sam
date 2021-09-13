@@ -1,5 +1,5 @@
 import { Handler, SQSEvent } from 'aws-lambda';
-import AWS, { SQS } from 'aws-sdk';
+import { SQS } from 'aws-sdk';
 import { DB } from './db';
 import { Message } from './domain';
 import { Formatter } from './formatter';
@@ -9,7 +9,7 @@ const dlq = process.env.DLQ || 'dlq-url';
 const senderQueue = process.env.SENDER_QUEUE || 'sender-queue-url';
 const table = process.env.TABLENAME || 'table-name';
 const queue = new Queue(new SQS(), senderQueue, dlq);
-const db = new DB(new AWS.DynamoDB.DocumentClient(), table);
+const db = new DB(table);
 const formatter = new Formatter();
 
 export const handler: Handler = async (event: SQSEvent) => {

@@ -1,0 +1,8 @@
+{
+  "WaParser": {
+    "DLQ": "dlq-url",
+    "SENDER_QUEUE": "Sender-queue",
+    "TABLENAME": "MessageValuesTable",
+    "LOCAL_DB": "true"
+  }
+}

@@ -90,6 +90,7 @@ Resources:
           DLQ: !Ref WaMessageParserDLQ
           SENDER_QUEUE: !Ref WaMessageSenderQueue
           TABLENAME: !Ref TABLENAME
+          LOCAL_DB: false
       DeadLetterQueue:
         Type: SQS
         TargetArn: !GetAtt WaMessageParserDLQ.Arn

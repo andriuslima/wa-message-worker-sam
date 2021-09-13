@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+  dynamo:
+    container_name: dynamodb-local
+    image: amazon/dynamodb-local
+    networks:
+      - wa-message-worker-network
+    ports:
+      - '8000:8000'
+    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath .'
+
+networks:
+  wa-message-worker-network:
+    name: wa-message-worker-network

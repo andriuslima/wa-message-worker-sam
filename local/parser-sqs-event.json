@@ -1,7 +1,7 @@
 {
   "Records": [
     {
-      "body": "{ \"key\": \"fallback\", \"phone\": \"99999999999\", \"params\": { \"linkboleto\": \"www.google.com\", \"name\": \"Andrius\" } }"
+      "body": "{ \"id\": \"1234\", \"key\": \"test-hello-world\", \"phone\": \"99999999999\", \"params\": { \"linkboleto\": \"www.google.com\", \"name\": \"Andrius\" } }"
     }
   ]
 }

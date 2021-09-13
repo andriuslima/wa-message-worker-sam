@@ -1,22 +1,31 @@
 import AWS from 'aws-sdk';
-import { DocumentClient, GetItemOutput } from 'aws-sdk/clients/dynamodb';
+import { ClientConfiguration, DocumentClient, GetItemOutput } from 'aws-sdk/clients/dynamodb';
 import { Message } from './domain';
 
 export class DB {
-  constructor(private client: DocumentClient, private table: string) {}
+  private client: DocumentClient;
+  constructor(private table: string) {
+    const local = process.env.LOCAL_DB;
+    const options: ClientConfiguration = { apiVersion: '2012-08-10' };
+    if (local === 'true') {
+      console.log('Connecting to local dynamoDB');
+      options.endpoint = 'http://dynamo:8000';
+    }
+    this.client = new DocumentClient(options);
+  }
 
   async get(key: string): Promise<Message> {
-    const params = {
-      TableName: this.table,
-      Key: { key },
-    };
-
-    const { Item: item }: GetItemOutput = await this.client.get(params).promise();
+    const { Item: item } = await this.client
+      .get({
+        TableName: this.table,
+        Key: { key },
+      })
+      .promise();
 
     if (!item) {
       throw Error(`DynamoDB item ${key} not found`);
     }
 
-    return AWS.DynamoDB.Converter.unmarshall(item) as Message;
+    return item as Message;
   }
 }

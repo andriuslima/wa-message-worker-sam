@@ -1,0 +1,12 @@
+{
+  "TableName": "MessageValuesTable",
+  "KeySchema": [
+    { "AttributeName": "key", "KeyType": "HASH" }
+  ],
+  "AttributeDefinitions": [
+    { "AttributeName": "key",
+      "AttributeType": "S"
+    }
+  ],
+  "BillingMode": "PAY_PER_REQUEST"
+}

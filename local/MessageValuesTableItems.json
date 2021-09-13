@@ -1,0 +1,37 @@
+{
+  "MessageValuesTable": [
+    {
+      "PutRequest": {
+        "Item": {
+          "key": {
+            "S": "test-hello-world"
+          },
+          "msgs": {
+            "L": [
+              {
+                "M": {
+                  "value": {
+                    "S": "Hello World!"
+                  },
+                  "index": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "index": {
+                    "N": "2"
+                  },
+                  "value": {
+                    "S": "Hello again!"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

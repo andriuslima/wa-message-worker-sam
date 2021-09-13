@@ -24,9 +24,18 @@ Build the application with: `yarn build`
 --data-urlencode 'contact[fields][link_do_boleto]=www.google.com'`
 
 ## Parser
-`sam local invoke WaParser --event local/parser-sqs-event.json`
+`docker-compose -f local/docker-compose.yml up -d`
+`aws dynamodb create-table --cli-input-json file://local/MessageValuesTable.json --endpoint-url http://localhost:8000`
+`aws dynamodb batch-write-item --request-items file://local/MessageValuesTableItems.json --endpoint-url http://localhost:8000`
+`sam local invoke WaParser --event local/parser-sqs-event.json -n local/environment.json --docker-network wa-message-worker-network`
 
 ## Sender 
 `sam local invoke WaSender --event local/sender-sqs-event.json  --parameter-overrides 'ParameterKey=UCHATTOKEN,ParameterValue=xxxxx`
 
 Replace the `xxxxx` with the actual token
+
+
+### Useful DynamoDB Commands
+To list all tables: `aws dynamodb list-tables --endpoint-url http://localhost:8000`
+To retrieve information about a specific table:  `aws dynamodb describe-table --table-name MessageValuesTable --endpoint-url http://localhost:8000`
+To list items from a specific table:  `aws dynamodb scan --table-name MessageValuesTable --endpoint-url http://localhost:8000`

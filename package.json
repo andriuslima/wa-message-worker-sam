@@ -6,7 +6,8 @@
     "build": "yarn workspaces -pt run build",
     "lint": "yarn workspaces -pt run lint",
     "layer": "yarn install --modules-folder layer/nodejs/node_modules --no-progress --non-interactive --production --silent",
-    "postbuild": "yarn lint && yarn layer && sam validate && sam build"
+    "postbuild": "yarn lint && yarn layer && sam validate && sam build",
+    "clean": "rm -rf .aws-sam bin/ node_modules/"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.63",
