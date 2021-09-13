@@ -1,13 +1,15 @@
 import { Handler, SQSEvent } from 'aws-lambda';
 import AWS, { SQS } from 'aws-sdk';
-import { SSM } from './ssm';
-import { Queue } from './queue';
+import { DB } from './db';
+import { Message } from './domain';
 import { Formatter } from './formatter';
+import { Queue } from './queue';
 
 const dlq = process.env.DLQ || 'dlq-url';
 const senderQueue = process.env.SENDER_QUEUE || 'sender-queue-url';
+const table = process.env.TABLE_NAME || 'table-name';
 const queue = new Queue(new SQS(), senderQueue, dlq);
-const ssm = new SSM(new AWS.SSM());
+const db = new DB(new AWS.DynamoDB.DocumentClient(), table);
 const formatter = new Formatter();
 
 export const handler: Handler = async (event: SQSEvent) => {
@@ -25,19 +27,25 @@ async function parse(body: string): Promise<void> {
 
   console.log(`Message received for: ${id}:${phone}:${key}`);
 
-  const message = await ssm.get(key);
+  const message = await db.get(key);
 
-  console.log(`Message retrieved: ${message.substring(0, 10)}`);
+  console.log(`${message.msgs.length} message retrieved`);
 
-  const replacedMessage = formatter.replace(params, message);
-
-  console.log(`Message replaced: ${replacedMessage}`);
-
-  if (formatter.hasPlaceholders(replacedMessage) || !replacedMessage) {
-    return queue.sendToDLQ(body, 'params missing to complete message');
-  }
-
+  const replacedMessages = replace(message, params);
   const formattedPhone = formatter.phone(phone);
 
-  await queue.send(JSON.stringify({ id, phone: formattedPhone, message: replacedMessage }));
+  await queue.sendBatch(
+    replacedMessages.msgs.map((msg) => JSON.stringify({ id, phone: formattedPhone, message: msg }))
+  );
+}
+
+function replace(message: Message, params: string[]): Message {
+  for (const entry of message.msgs) {
+    entry.value = formatter.replace(params, entry.value);
+    console.log(`Message replaced: ${entry.value}`);
+    if (formatter.hasPlaceholders(entry.value) || !entry.value) {
+      console.log(`params missing to complete message: ${entry.value}`);
+    }
+  }
+  return message;
 }
