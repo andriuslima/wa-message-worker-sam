@@ -1,5 +1,4 @@
-import AWS from 'aws-sdk';
-import { ClientConfiguration, DocumentClient, GetItemOutput } from 'aws-sdk/clients/dynamodb';
+import { ClientConfiguration, DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { Message } from './domain';
 
 export class DB {
