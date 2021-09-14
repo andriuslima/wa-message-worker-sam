@@ -30,7 +30,7 @@ async function handleMessage(event: IntegrationEvent): Promise<void> {
     try {
       sendMessage(message, event.phone);
     } catch (err) {
-      queue.sendToDLQ(JSON.stringify(event), err);
+      queue.sendToDLQ(JSON.stringify(event), JSON.stringify(err));
     }
   }
 }
