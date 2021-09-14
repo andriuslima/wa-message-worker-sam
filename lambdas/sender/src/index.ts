@@ -1,7 +1,6 @@
 import { Handler, SQSEvent } from 'aws-lambda';
 import { SQS } from 'aws-sdk';
 import axios from 'axios';
-import qs from 'qs';
 import { compareMsgs, IntegrationEvent, MessageValue } from './domain';
 import { Queue } from './queue';
 import { UChat } from './uchat';
@@ -39,16 +38,7 @@ async function handleMessage(event: IntegrationEvent): Promise<void> {
 async function sendMessage(message: MessageValue, phone: string): Promise<void> {
   console.log(`Message received: ${JSON.stringify(message)}`);
 
-  const data = qs.stringify({
-    token: uChatToken,
-    cmd: 'chat',
-    to: phone + '@c.us',
-    msg: message.value,
-  });
-
-  console.log(`Sending message to ${phone} with content "${message.value.substring(0, 10)}..."`);
-
-  const response = await uchat.send(data);
+  const response = await uchat.send(phone, message.value);
 
   console.log(`http request response status ${response.statusText}: ${JSON.stringify(response.data)}`);
 
