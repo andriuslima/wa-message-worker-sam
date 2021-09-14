@@ -35,7 +35,7 @@ async function parse(body: string): Promise<void> {
   const formattedPhone = formatter.phone(phone);
 
   await queue.sendBatch(
-    replacedMessages.msgs.map((msg) => JSON.stringify({ id, phone: formattedPhone, message: msg }))
+    replacedMessages.msgs.map((msg) => JSON.stringify({ id, phone: formattedPhone, message: msg.value }))
   );
 }
 
