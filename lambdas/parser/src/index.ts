@@ -34,7 +34,7 @@ async function parse(body: string): Promise<void> {
   const replacedMessage = replace(message, params);
   const formattedPhone = formatter.phone(phone);
 
-  await queue.send(JSON.stringify({ phone: formattedPhone, message: replacedMessage.msgs }));
+  await queue.send(JSON.stringify({ phone: formattedPhone, messages: replacedMessage.msgs }));
 }
 
 function replace(message: Message, params: string[]): Message {

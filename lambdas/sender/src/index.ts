@@ -19,6 +19,7 @@ export const handler: Handler = async (event: SQSEvent) => {
 };
 
 async function handleMessage(event: IntegrationEvent): Promise<void> {
+  console.log(`Handling event: ${JSON.stringify(event)}`);
   if (event.messages.length == 0) {
     console.log('No messages to send');
     return;
