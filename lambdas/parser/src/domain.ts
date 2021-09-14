@@ -6,4 +6,5 @@ export interface Message {
 export interface MessageValue {
   value: string;
   index: number;
+  delay: number;
 }

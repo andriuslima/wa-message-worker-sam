@@ -3,12 +3,6 @@ import SQS, { MessageBodyAttributeMap, SendMessageRequest } from 'aws-sdk/client
 export class Queue {
   constructor(private client: SQS, private queue: string, private dlq: string) {}
 
-  async sendBatch(msg: string[]): Promise<void> {
-    for (const entry of msg) {
-      await this.send(entry);
-    }
-  }
-
   async send(body: string): Promise<void> {
     const sendMessageParams: SendMessageRequest = {
       MessageBody: body,

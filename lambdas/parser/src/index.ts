@@ -31,12 +31,10 @@ async function parse(body: string): Promise<void> {
 
   console.log(`${message.msgs.length} message retrieved`);
 
-  const replacedMessages = replace(message, params);
+  const replacedMessage = replace(message, params);
   const formattedPhone = formatter.phone(phone);
 
-  await queue.sendBatch(
-    replacedMessages.msgs.map((msg) => JSON.stringify({ id, phone: formattedPhone, message: msg.value }))
-  );
+  await queue.send(JSON.stringify({ phone: formattedPhone, message: replacedMessage.msgs }));
 }
 
 function replace(message: Message, params: string[]): Message {

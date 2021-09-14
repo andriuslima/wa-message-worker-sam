@@ -48,7 +48,7 @@ Resources:
     Properties:
       LayerName: comm-layer
       CompatibleRuntimes:
-      - nodejs12.x
+        - nodejs12.x
       Description: Common layer for WaSender and Webhooks
       ContentUri: ./layer
   ActiveCampaignWebhook:
@@ -97,14 +97,14 @@ Resources:
       Policies:
         - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'
         - Statement:
-          - Sid: DynamoPolicy
-            Effect: Allow
-            Action:
-              - dynamodb:PutItem
-              - dynamodb:GetItem
-              - dynamodb:Query
-            Resource:
-              - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TABLENAME}*"
+            - Sid: DynamoPolicy
+              Effect: Allow
+              Action:
+                - dynamodb:PutItem
+                - dynamodb:GetItem
+                - dynamodb:Query
+              Resource:
+                - !Sub 'arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TABLENAME}*'
         - Statement:
             - Sid: SSMGetParameterPolicy
               Effect: Allow
@@ -141,6 +141,14 @@ Resources:
         TargetArn: !GetAtt WaMessageSenderDLQ.Arn
       Policies:
         - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'
+        - Statement:
+            - Sid: SQSQueuePolicy
+              Effect: Allow
+              Action:
+                - SQS:SendMessage
+              Resource:
+                - !GetAtt WaMessageSenderQueue.Arn
+                - !GetAtt WaMessageSenderDLQ.Arn
   WaSenderRetry:
     Type: AWS::Serverless::Function
     Properties:
@@ -169,13 +177,13 @@ Resources:
       Policies:
         - 'arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy'
         - Statement:
-              - Sid: SQSQueuePolicy
-                Effect: Allow
-                Action:
-                  - SQS:SendMessage
-                  - SQS:ReceiveMessage
-                  - SQS:DeleteMessage
-                  - SQS:GetQueueAttributes
-                Resource:
-                  - !GetAtt WaMessageSenderDLQ.Arn
-                  - !GetAtt WaMessageSenderQueue.Arn
+            - Sid: SQSQueuePolicy
+              Effect: Allow
+              Action:
+                - SQS:SendMessage
+                - SQS:ReceiveMessage
+                - SQS:DeleteMessage
+                - SQS:GetQueueAttributes
+              Resource:
+                - !GetAtt WaMessageSenderDLQ.Arn
+                - !GetAtt WaMessageSenderQueue.Arn
