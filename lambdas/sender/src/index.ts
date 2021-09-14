@@ -28,7 +28,7 @@ async function handleMessage(event: IntegrationEvent): Promise<void> {
 
   for (const message of event.messages) {
     try {
-      sendMessage(message, event.phone);
+      await sendMessage(message, event.phone);
     } catch (err) {
       queue.sendToDLQ(JSON.stringify(event), JSON.stringify(err));
     }
@@ -39,8 +39,6 @@ async function sendMessage(message: MessageValue, phone: string): Promise<void> 
   console.log(`Message received: ${JSON.stringify(message)}`);
 
   const response = await uchat.send(phone, message.value);
-
-  console.log(`http request response status ${response.statusText}: ${JSON.stringify(response.data)}`);
 
   if (response.status !== 200 || response.data.status === 'offline') {
     throw new Error(`uCHAT Error sending message: ${JSON.stringify(response)}`);

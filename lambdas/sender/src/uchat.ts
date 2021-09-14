@@ -18,6 +18,10 @@ export class UChat {
 
     console.log(`Sending uChat command: ${JSON.stringify(data)}`);
 
-    return await this.client.post(`/${this.token}`, data, config);
+    const response = await this.client.post(`/${this.token}`, data, config);
+
+    console.log(`uChat response: ${JSON.stringify(response)}`);
+
+    return response;
   }
 }
