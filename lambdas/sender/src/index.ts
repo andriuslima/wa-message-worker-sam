@@ -9,7 +9,8 @@ const http = axios.create({ baseURL: process.env.UCHAT_URL || 'localhost:1234' }
 const uChatToken = process.env.UCHAT_TOKEN || 'no-token';
 const uchat = new UChat(http, uChatToken);
 const dlq = process.env.DLQ || 'dlq-url';
-const queue = new Queue(new SQS(), dlq);
+const senderQueue = process.env.QUEUE || 'queue-url';
+const queue = new Queue(new SQS(), senderQueue, dlq);
 
 export const handler: Handler = async (event: SQSEvent) => {
   for (const record of event.Records) {
@@ -24,15 +25,23 @@ async function handleMessage(event: IntegrationEvent): Promise<void> {
     return;
   }
 
-  event.messages.sort(compareMsgs);
-
-  for (const message of event.messages) {
-    try {
-      await sendMessage(message, event.phone);
-    } catch (err) {
-      queue.sendToDLQ(JSON.stringify(event), JSON.stringify(err));
-    }
+  event.messages.sort(compareMsgs).reverse();
+  const messageToSend = event.messages.pop();
+  if (!messageToSend) {
+    console.log('There is no message to be sent');
+    return;
   }
+
+  try {
+    await sendMessage(messageToSend, event.phone);
+  } catch (err) {
+    event.messages.push(messageToSend);
+    queue.sendToDLQ(JSON.stringify(event), JSON.stringify(err));
+    return;
+  }
+
+  const nextMessage = event.messages[event.messages.length - 1];
+  await queue.enqueueEvent(event, nextMessage.delay | 0);
 }
 
 async function sendMessage(message: MessageValue, phone: string): Promise<void> {

@@ -136,6 +136,7 @@ Resources:
           UCHAT_URL: !Ref UCHATURL
           UCHAT_TOKEN: !Ref UCHATTOKEN
           DLQ: !Ref WaMessageSenderDLQ
+          QUEUE: !Ref WaMessageSenderQueue
       DeadLetterQueue:
         Type: SQS
         TargetArn: !GetAtt WaMessageSenderDLQ.Arn
