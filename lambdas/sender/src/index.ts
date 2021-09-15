@@ -40,8 +40,12 @@ async function handleMessage(event: IntegrationEvent): Promise<void> {
     return;
   }
 
-  const nextMessage = event.messages[event.messages.length - 1];
-  await queue.enqueueEvent(event, nextMessage.delay | 0);
+  if (event.messages.length > 0) {
+    const nextMessage = event.messages[event.messages.length - 1];
+    await queue.enqueueEvent(event, nextMessage.delay | 0);
+  } else {
+    console.log('No more messages to handle');
+  }
 }
 
 async function sendMessage(message: MessageValue, phone: string): Promise<void> {
