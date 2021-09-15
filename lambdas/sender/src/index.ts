@@ -36,7 +36,7 @@ async function handleMessage(event: IntegrationEvent): Promise<void> {
     await sendMessage(messageToSend, event.phone);
   } catch (err) {
     event.messages.push(messageToSend);
-    queue.sendToDLQ(JSON.stringify(event), JSON.stringify(err));
+    await queue.sendToDLQ(JSON.stringify(event), JSON.stringify(err));
     return;
   }
 
