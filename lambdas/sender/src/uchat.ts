@@ -23,7 +23,7 @@ export class UChat {
       return response;
     } catch (err) {
       console.error(`Error while sending uChat command: ${err}`);
-      throw new Error(err);
+      throw new Error(`Error while sending uChat command: ${err}`);
     }
   }
 }

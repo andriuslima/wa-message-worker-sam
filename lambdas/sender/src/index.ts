@@ -50,6 +50,7 @@ async function sendMessage(message: MessageValue, phone: string): Promise<void> 
   const response = await uchat.send(phone, message.value);
 
   if (response.status !== 200 || response.data.status === 'offline') {
+    console.error(`uCHAT Error sending message: ${JSON.stringify(response)}`);
     throw new Error(`uCHAT Error sending message: ${JSON.stringify(response)}`);
   }
 
