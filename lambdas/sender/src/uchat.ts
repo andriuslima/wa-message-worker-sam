@@ -18,9 +18,7 @@ export class UChat {
 
     console.log(`Sending uChat command: ${JSON.stringify(data)}`);
     try {
-      const response = await this.client.post(`/${this.token}`, data, config);
-      console.log(`uChat response: ${JSON.stringify(response)}`);
-      return response;
+      return await this.client.post(`/${this.token}`, data, config);
     } catch (err) {
       console.error(`Error while sending uChat command: ${err}`);
       throw new Error(`Error while sending uChat command: ${err}`);

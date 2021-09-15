@@ -47,11 +47,11 @@ async function handleMessage(event: IntegrationEvent): Promise<void> {
 async function sendMessage(message: MessageValue, phone: string): Promise<void> {
   console.log(`Message received: ${JSON.stringify(message)}`);
 
-  const response = await uchat.send(phone, message.value);
+  const { data, status } = await uchat.send(phone, message.value);
 
-  if (response.status !== 200 || response.data.status === 'offline') {
-    console.error(`uCHAT Error sending message: ${JSON.stringify(response)}`);
-    throw new Error(`uCHAT Error sending message: ${JSON.stringify(response)}`);
+  if (status !== 200 || data.status === 'offline') {
+    console.error(`uCHAT Error sending message: ${status}:${JSON.stringify(data)}`);
+    throw new Error(`uCHAT Error sending message: ${status}:${JSON.stringify(data)}`);
   }
 
   console.log(`Message sent to ${phone}`);
