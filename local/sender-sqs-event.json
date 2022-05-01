@@ -1,7 +1,7 @@
 {
   "Records": [
     {
-      "body": "{ \"message\": \"Hello World!\", \"phone\": \"5551981680997\"}"
+      "body": "{ \"messages\": [{\"value\": \"Hello World from AWS Sam!\"}], \"phone\": \"5551981680997\"}"
     }
   ]
 }

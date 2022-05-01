@@ -3,11 +3,15 @@ import { SQS } from 'aws-sdk';
 import axios from 'axios';
 import { compareMsgs, IntegrationEvent, MessageValue } from './domain';
 import { Queue } from './queue';
-import { UChat } from './uchat';
+import { ZApi } from './z-api';
 
-const http = axios.create({ baseURL: process.env.UCHAT_URL || 'localhost:1234' });
-const uChatToken = process.env.UCHAT_TOKEN || 'no-token';
-const uchat = new UChat(http, uChatToken);
+const zApiHost = process.env.ZAPI_HOST;
+const zApiInstance = process.env.ZAPI_INSTANCE;
+const zApiToken = process.env.ZAPI_TOKEN;
+const zApiUrl = `${zApiHost}/instances/${zApiInstance}/token/${zApiToken}`;
+
+const http = axios.create({ baseURL: zApiUrl || 'localhost:1234' });
+const zApi = new ZApi(http);
 const dlq = process.env.DLQ || 'dlq-url';
 const senderQueue = process.env.QUEUE || 'queue-url';
 const queue = new Queue(new SQS(), senderQueue, dlq);
@@ -51,12 +55,7 @@ async function handleMessage(event: IntegrationEvent): Promise<void> {
 async function sendMessage(message: MessageValue, phone: string): Promise<void> {
   console.log(`Message received: ${JSON.stringify(message)}`);
 
-  const { data, status } = await uchat.send(phone, message.value);
+  const { data } = await zApi.send(phone, message.value);
 
-  if (status !== 200 || data.status === 'offline') {
-    console.error(`uCHAT Error sending message: ${status}:${JSON.stringify(data)}`);
-    throw new Error(`uCHAT Error sending message: ${status}:${JSON.stringify(data)}`);
-  }
-
-  console.log(`Message sent to ${phone}`);
+  console.log(`Message sent to ${phone}, response: ${JSON.stringify(data)}`);
 }

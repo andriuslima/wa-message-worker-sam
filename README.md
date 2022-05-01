@@ -30,9 +30,9 @@ Build the application with: `yarn build`
 `sam local invoke WaParser --event local/parser-sqs-event.json -n local/environment.json --docker-network wa-message-worker-network`
 
 ## Sender 
-`sam local invoke WaSender --event local/sender-sqs-event.json  --parameter-overrides 'ParameterKey=UCHATTOKEN,ParameterValue=xxxxx`
+`sam local invoke WaSender --event local/sender-sqs-event.json --parameter-overrides 'ParameterKey=ZAPITOKEN,ParameterValue=XXX' 'ParameterKey=ZAPIINSTANCE,ParameterValue=XXX'`
 
-Replace the `xxxxx` with the actual token
+Replace the `xxxxx` with the actual values
 
 
 ### Useful DynamoDB Commands

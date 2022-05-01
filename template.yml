@@ -3,13 +3,17 @@ Transform: AWS::Serverless-2016-10-31
 Description: Serverless application to process phones and send whatsapp messages
 
 Parameters:
-  UCHATURL:
+  ZAPIURL:
     Type: String
-    Description: uChat URl do post the message
-    Default: https://v1.utalk.chat/send
-  UCHATTOKEN:
+    Description: ZApi host
+    Default: https://api.z-api.io
+  ZAPIINSTANCE:
     Type: String
-    Description: uChat Token
+    Description: ZApi instance id
+    Default: 123
+  ZAPITOKEN:
+    Type: String
+    Description: ZApi Token
     Default: 123abc
   TABLENAME:
     Type: String
@@ -24,7 +28,6 @@ Globals:
     Timeout: 10
     Layers:
       - !Ref CommLayer
-      - 'arn:aws:lambda:sa-east-1:580247275435:layer:LambdaInsightsExtension:12'
 
 Resources:
   WaMessageParserDLQ:
@@ -133,8 +136,9 @@ Resources:
             BatchSize: 10
       Environment:
         Variables:
-          UCHAT_URL: !Ref UCHATURL
-          UCHAT_TOKEN: !Ref UCHATTOKEN
+          ZAPI_HOST: !Ref ZAPIURL
+          ZAPI_INSTANCE: !Ref ZAPIINSTANCE
+          ZAPI_TOKEN: !Ref ZAPITOKEN
           DLQ: !Ref WaMessageSenderDLQ
           QUEUE: !Ref WaMessageSenderQueue
       DeadLetterQueue:

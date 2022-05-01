@@ -27,7 +27,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      
+
       - name: Build
         run: yarn build
 
@@ -56,5 +56,6 @@ jobs:
             --template-file .aws-sam/build/template.yaml \
             --stack-name ${{ steps.vars.outputs.stack }} \
             --s3-bucket ${{ steps.vars.outputs.stack }} \
-            --parameter-overrides 'ParameterKey=UCHATTOKEN,ParameterValue=${{ secrets.UCHAT_TOKEN }}' \
+            --parameter-overrides 'ParameterKey=ZAPITOKEN,ParameterValue=${{ secrets.ZAPI_TOKEN }}' \
+              'ParameterKey=ZAPIINSTANCE,ParameterValue=${{ secrets.ZAPI_INSTANCE }}' \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
