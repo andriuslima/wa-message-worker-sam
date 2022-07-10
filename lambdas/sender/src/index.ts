@@ -1,17 +1,17 @@
 import { Handler, SQSEvent } from 'aws-lambda';
-import { SQS } from 'aws-sdk';
+import { SQS, SSM } from 'aws-sdk';
 import axios from 'axios';
 import { compareMsgs, IntegrationEvent, MessageValue } from './domain';
 import { Queue } from './queue';
 import { ZApi } from './z-api';
+import { Parameter } from './parameter';
 
 const zApiHost = process.env.ZAPI_HOST;
-const zApiInstance = process.env.ZAPI_INSTANCE;
-const zApiToken = process.env.ZAPI_TOKEN;
-const zApiUrl = `${zApiHost}/instances/${zApiInstance}/token/${zApiToken}`;
+const zApiUrl = `${zApiHost}/instances/`;
 
 const http = axios.create({ baseURL: zApiUrl || 'localhost:1234' });
-const zApi = new ZApi(http);
+const parameter = new Parameter(new SSM());
+const zApi = new ZApi(http, parameter);
 const dlq = process.env.DLQ || 'dlq-url';
 const senderQueue = process.env.QUEUE || 'queue-url';
 const queue = new Queue(new SQS(), senderQueue, dlq);
@@ -37,7 +37,7 @@ async function handleMessage(event: IntegrationEvent): Promise<void> {
   }
 
   try {
-    await sendMessage(messageToSend, event.phone);
+    await sendMessage(messageToSend, event.phone, event.instance);
   } catch (err) {
     event.messages.push(messageToSend);
     await queue.sendToDLQ(JSON.stringify(event), JSON.stringify(err));
@@ -52,10 +52,10 @@ async function handleMessage(event: IntegrationEvent): Promise<void> {
   }
 }
 
-async function sendMessage(message: MessageValue, phone: string): Promise<void> {
+async function sendMessage(message: MessageValue, phone: string, instance: string): Promise<void> {
   console.log(`Message received: ${JSON.stringify(message)}`);
 
-  const { data } = await zApi.send(phone, message.value);
+  const { data } = await zApi.send(phone, message.value, instance);
 
   console.log(`Message sent to ${phone}, response: ${JSON.stringify(data)}`);
 }

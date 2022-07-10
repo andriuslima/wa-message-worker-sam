@@ -7,14 +7,6 @@ Parameters:
     Type: String
     Description: ZApi host
     Default: https://api.z-api.io
-  ZAPIINSTANCE:
-    Type: String
-    Description: ZApi instance id
-    Default: 123
-  ZAPITOKEN:
-    Type: String
-    Description: ZApi Token
-    Default: 123abc
   TABLENAME:
     Type: String
     Description: DynamoDB table name that contains the messages
@@ -137,8 +129,6 @@ Resources:
       Environment:
         Variables:
           ZAPI_HOST: !Ref ZAPIURL
-          ZAPI_INSTANCE: !Ref ZAPIINSTANCE
-          ZAPI_TOKEN: !Ref ZAPITOKEN
           DLQ: !Ref WaMessageSenderDLQ
           QUEUE: !Ref WaMessageSenderQueue
       DeadLetterQueue:
@@ -154,6 +144,11 @@ Resources:
               Resource:
                 - !GetAtt WaMessageSenderQueue.Arn
                 - !GetAtt WaMessageSenderDLQ.Arn
+            - Sid: SSMGetParameterPolicy
+              Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: '*'
   WaSenderRetry:
     Type: AWS::Serverless::Function
     Properties:

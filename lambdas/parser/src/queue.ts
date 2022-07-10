@@ -1,11 +1,12 @@
 import SQS, { MessageBodyAttributeMap, SendMessageRequest } from 'aws-sdk/clients/sqs';
+import { IntegrationEvent } from './domain';
 
 export class Queue {
   constructor(private client: SQS, private queue: string, private dlq: string) {}
 
-  async send(body: string): Promise<void> {
+  async send(body: IntegrationEvent): Promise<void> {
     const sendMessageParams: SendMessageRequest = {
-      MessageBody: body,
+      MessageBody: JSON.stringify(body),
       QueueUrl: this.queue,
     };
 

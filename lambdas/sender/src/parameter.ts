@@ -1,6 +1,6 @@
 import { GetParameterRequest } from 'aws-sdk/clients/ssm';
 
-export class SSM {
+export class Parameter {
   constructor(private client: AWS.SSM) {}
 
   async get(parameter: string): Promise<string> {

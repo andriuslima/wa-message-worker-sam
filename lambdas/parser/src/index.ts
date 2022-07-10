@@ -1,7 +1,7 @@
 import { Handler, SQSEvent } from 'aws-lambda';
 import { SQS } from 'aws-sdk';
 import { DB } from './db';
-import { Message } from './domain';
+import { IntegrationEvent, Message } from './domain';
 import { Formatter } from './formatter';
 import { Queue } from './queue';
 
@@ -33,8 +33,13 @@ async function parse(body: string): Promise<void> {
 
   const replacedMessage = replace(message, params);
   const formattedPhone = formatter.phone(phone);
+  const integrationEvent: IntegrationEvent = {
+    phone: formattedPhone,
+    instance: message.instance,
+    messages: replacedMessage.msgs,
+  };
 
-  await queue.send(JSON.stringify({ phone: formattedPhone, messages: replacedMessage.msgs }));
+  await queue.send(integrationEvent);
 }
 
 function replace(message: Message, params: string[]): Message {

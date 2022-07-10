@@ -1,5 +1,6 @@
 export interface IntegrationEvent {
   phone: string;
+  instance: string;
   messages: MessageValue[];
 }
 
