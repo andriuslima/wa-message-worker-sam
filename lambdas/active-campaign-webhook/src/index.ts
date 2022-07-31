@@ -24,29 +24,29 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
   console.log(`Contact info received: ${JSON.stringify(contact)}`);
 
   const { id, phone, first_name: firstName, last_name: lastName, fields } = contact;
-
-  if (!phone) {
-    return {
-      statusCode: 201,
-      body: 'Phone number not present on request body',
-    };
-  }
-
+  const phones = [...new Set([phone, fields?.telefone_checkout_hotmart])];
   const name = (firstName || lastName || 'Abundante').split(' ')[0];
   const linkBoleto = fields?.link_do_boleto;
 
-  console.log(`Active campaign event received for contact: ${id}:${name}:${phone}`);
+  if (phones.length == 0) {
+    return {
+      statusCode: 201,
+      body: 'Could not extract any phone number from request body.',
+    };
+  }
+
+  console.log(`Active campaign event received for contact: ${id}:${name}:${phones}`);
   console.log(`Message key received: ${key}`);
 
-  const messageBody = JSON.stringify({ id, phone, key, params: { name, linkBoleto } });
+  const messages = phones.map((p) => JSON.stringify({ id, phone: p, key, params: { name, linkBoleto } }));
 
-  console.log('Routing request to queue...');
-  await queue.send(messageBody);
+  console.log('Routing requests to queue...');
+  await queue.sendAll(messages);
 
   console.log('Routing done!');
 
   return {
     statusCode: 201,
-    body: messageBody,
+    body: JSON.stringify(messages),
   };
 };
