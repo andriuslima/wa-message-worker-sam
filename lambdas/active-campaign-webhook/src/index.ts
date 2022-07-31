@@ -11,14 +11,15 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
     throw new Error('Message key not present on request path parameters');
   }
 
-  console.log(`Requets body: ${event.body}`);
-
   if (!event.body) {
     throw new Error('Body not present request');
   }
 
+  const body = qs.parse(event.body);
   const key = event.pathParameters.key;
-  const { contact }: any = qs.parse(event.body);
+  const { contact }: any = body;
+
+  console.log(`Request body: ${JSON.stringify(body)}`);
 
   console.log(`Contact info received: ${JSON.stringify(contact)}`);
 
