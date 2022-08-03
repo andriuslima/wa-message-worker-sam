@@ -2,9 +2,11 @@ import { APIGatewayEvent, Handler } from 'aws-lambda';
 import { SQS } from 'aws-sdk';
 import { Queue } from './queue';
 import qs from 'qs';
+import { PhoneFormatter } from './phoneFormatter';
 
 const queueUrl = process.env.QUEUE || 'localhost';
 const queue = new Queue(new SQS(), queueUrl);
+const phoneFormatter = new PhoneFormatter();
 
 export const handler: Handler = async (event: APIGatewayEvent) => {
   if (!event.pathParameters || !event.pathParameters.key) {
@@ -24,7 +26,8 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
   console.log(`Contact info received: ${JSON.stringify(contact)}`);
 
   const { id, phone, first_name: firstName, last_name: lastName, fields } = contact;
-  const phones = [...new Set([phone, fields?.telefone_checkout_hotmart])];
+  const formattedPhones = [phone, fields?.telefone_checkout_hotmart].map((p) => phoneFormatter.format(p));
+  const phones = [...new Set(formattedPhones)];
   const name = (firstName || lastName || 'Abundante').split(' ')[0];
   const linkBoleto = fields?.link_do_boleto;
 

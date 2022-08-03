@@ -32,9 +32,8 @@ async function parse(body: string): Promise<void> {
   console.log(`${message.msgs.length} message retrieved`);
 
   const replacedMessage = replace(message, params);
-  const formattedPhone = formatter.phone(phone);
   const integrationEvent: IntegrationEvent = {
-    phone: formattedPhone,
+    phone,
     instance: message.instance,
     messages: replacedMessage.msgs,
   };
