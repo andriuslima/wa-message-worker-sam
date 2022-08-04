@@ -26,7 +26,7 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
   console.log(`Contact info received: ${JSON.stringify(contact)}`);
 
   const { id, phone, first_name: firstName, last_name: lastName, fields } = contact;
-  const formattedPhones = [phone, fields?.telefone_checkout_hotmart].map((p) => phoneFormatter.format(p));
+  const formattedPhones = [phoneFormatter.format(phone), fields?.telefone_checkout_hotmart];
   const phones = [...new Set(formattedPhones)];
   const name = (firstName || lastName || 'Abundante').split(' ')[0];
   const linkBoleto = fields?.link_do_boleto;
