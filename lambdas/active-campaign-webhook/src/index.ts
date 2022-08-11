@@ -25,7 +25,7 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
 
   console.log(`Contact info received: ${JSON.stringify(contact)}`);
 
-  const { id, phone, first_name: firstName, last_name: lastName, fields } = contact;
+  const { id, phone, first_name: firstName, last_name: lastName, fields, email } = contact;
   const formattedPhones = [phoneFormatter.format(phone), fields?.telefone_checkout_hotmart];
   const phones = [...new Set(formattedPhones)];
   const name = (firstName || lastName || 'Abundante').split(' ')[0];
@@ -41,7 +41,7 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
   console.log(`Active campaign event received for contact: ${id}:${name}:${phones}`);
   console.log(`Message key received: ${key}`);
 
-  const messages = phones.map((p) => JSON.stringify({ id, phone: p, key, params: { name, linkBoleto } }));
+  const messages = phones.map((p) => JSON.stringify({ id, phone: p, key, params: { name, linkBoleto, email } }));
 
   console.log('Routing requests to queue...');
   await queue.sendAll(messages);
