@@ -29,7 +29,16 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
   const formattedPhones = [phoneFormatter.format(phone), fields?.telefone_checkout_hotmart];
   const phones = [...new Set(formattedPhones)];
   const name = (firstName || lastName || 'Abundante').split(' ')[0];
-  const linkBoleto = fields?.link_do_boleto;
+  const { link_do_boleto, data_de_nascimento, nome_completo_para_o_mapa, whatsapp, whatsapp_cod_ddi_pais } = fields;
+  const params = {
+    name,
+    email,
+    linkBoleto: link_do_boleto,
+    dataNascimento: data_de_nascimento,
+    nomeCompletoMapa: nome_completo_para_o_mapa,
+    whatsapp,
+    whatsappCodDdiPais: whatsapp_cod_ddi_pais,
+  };
 
   if (phones.length == 0) {
     return {
@@ -40,8 +49,9 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
 
   console.log(`Active campaign event received for contact: ${id}:${name}:${phones}`);
   console.log(`Message key received: ${key}`);
+  console.log(`Routing with the following params: ${JSON.stringify(params)}`);
 
-  const messages = phones.map((p) => JSON.stringify({ id, phone: p, key, params: { name, linkBoleto, email } }));
+  const messages = phones.map((p) => JSON.stringify({ id, phone: p, key, params }));
 
   console.log('Routing requests to queue...');
   await queue.sendAll(messages);
