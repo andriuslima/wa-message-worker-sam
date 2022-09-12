@@ -29,7 +29,14 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
   const formattedPhones = [phoneFormatter.format(phone), fields?.telefone_checkout_hotmart];
   const phones = [...new Set(formattedPhones)];
   const name = (firstName || lastName || 'Abundante').split(' ')[0];
-  const { link_do_boleto, data_de_nascimento, nome_completo_para_o_mapa, whatsapp, whatsapp_cod_ddi_pais } = fields;
+  const {
+    link_do_boleto,
+    data_de_nascimento,
+    nome_completo_para_o_mapa,
+    whatsapp,
+    whatsapp_cod_ddi_pais,
+    reprogramao_do_amorquizdata_de_nascimento,
+  } = fields;
   const params = {
     name,
     email,
@@ -38,6 +45,7 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
     nomeCompletoMapa: nome_completo_para_o_mapa,
     whatsapp,
     whatsappCodDdiPais: whatsapp_cod_ddi_pais,
+    reproDoAmordataNascimento: reprogramao_do_amorquizdata_de_nascimento,
   };
 
   if (phones.length == 0) {
