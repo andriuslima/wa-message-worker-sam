@@ -11,7 +11,7 @@
     "lint": "eslint && prettier src/ --check"
   },
   "dependencies": {
-    "qs": "^6.9.4",
+    "qs": "^6.10.3",
     "libphonenumber-js": "^1.9.7"
   }
 }
