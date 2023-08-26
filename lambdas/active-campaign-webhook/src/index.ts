@@ -36,6 +36,10 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
     whatsapp,
     whatsapp_cod_ddi_pais,
     reprogramao_do_amorquizdata_de_nascimento,
+    mapa_numerolgico_infantil_data_de_nascimento,
+    mapa_numerolgico_infantil_nome_completo_para_o_mapa,
+    mapa_numerolgico_infantil_whatsapp,
+    mapa_numerolgico_infantil_whatsapp_cod_ddi_pais,
   } = fields;
   const params = {
     name,
@@ -46,6 +50,10 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
     whatsapp,
     whatsappCodDdiPais: whatsapp_cod_ddi_pais,
     reproDoAmordataNascimento: reprogramao_do_amorquizdata_de_nascimento,
+    mapaInfantilDataNascimento: mapa_numerolgico_infantil_data_de_nascimento,
+    mapaInfantilNomeCompletoMapa: mapa_numerolgico_infantil_nome_completo_para_o_mapa,
+    mapaInfantilWhatsapp: mapa_numerolgico_infantil_whatsapp,
+    mapaInfantilWhatsappCodDdiPais: mapa_numerolgico_infantil_whatsapp_cod_ddi_pais,
   };
 
   if (phones.length == 0) {
