@@ -11,7 +11,7 @@
     "lint": "eslint && prettier src/ --check"
   },
   "dependencies": {
-    "axios": "^0.21.2",
+    "axios": "^1.6.0",
     "qs": "^6.10.3"
   }
 }
